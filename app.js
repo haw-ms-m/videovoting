@@ -18,9 +18,13 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//EJS Template Engine initialisieren
+app.engine('.ejs', require('ejs').__express) ;
+app.set('view engine', 'ejs') ;
 
 app.use('/', index);
 app.use('/users', users);
@@ -45,9 +49,20 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-app.listen(3000, function(){
-    console.log("listening on 3000");
+
+// Initialisierung der Datenbank
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+    host: "www.tetra-jesteburg.de",
+    user: "node",
+    password: "123456#",
+    database: "node"
 });
 
+//Webserver starten
+app.listen(3000, function() {
+    console.log("listening on 3000") ;
+});
 
 
