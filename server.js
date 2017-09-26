@@ -38,6 +38,10 @@ app.listen(3000, function() {
     console.log("listening on 3000") ;
 });
 
+app.get('/' , function(req, res) {
+    res.sendfile(__dirname + '/views/index.ejs') ;
+});
+
 app.get('/hallo' , function(req, res) {
     res.send('Moin Digga, I bims ein Pc');
 });
