@@ -10,21 +10,21 @@ var users = require('./routes/users');
 
 var app = express();
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
+// view engine setup
+app.engine('.ejs', require('ejs').__express) ;
+app.set('view engine', 'ejs') ;
+
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-//EJS Template Engine initialisieren
-app.engine('.ejs', require('ejs').__express) ;
-app.set('view engine', 'ejs') ;
 
 app.use('/', index);
 app.use('/users', users);
@@ -64,5 +64,6 @@ var con = mysql.createConnection({
 app.listen(3000, function() {
     console.log("listening on 3000") ;
 });
+
 
 
