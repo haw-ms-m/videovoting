@@ -5,9 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -26,34 +23,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
+//session setup
+const session = require('express-session');
+app.use(session({
+    secret: 'this-is-a-secret',     //necessary for encoding
+    resave: false,                  //should be set to false, except store needs it
+    saveUninitialized: false        //same reason as above.
+}));
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+//password hash, for encoding the pw
+const passwordHash = require('password-hash');
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-module.exports = app;
 
 
 // Initialisierung der Datenbank
 var mysql = require('mysql');
 
-var con = mysql.createConnection({
+var mysqlConnect = mysql.createConnection({
     host: "www.tetra-jesteburg.de",
     user: "node",
     password: "123456#",
@@ -65,7 +51,100 @@ app.listen(3000, function() {
     console.log("listening on 3000") ;
 });
 
-// hallo
+// Homepage laden
+app.get('/', function (request,response) {
+    response.render('index', { title: 'Home' });
+});
+
+//TODO write login functionality
+app.get('/login', function(request, response) {
+
+    response.render('login', { title: 'Login' });
 
 
+});
+
+app.get('/errors', function(request, response) {
+
+    response.render('errors', { title: 'Errors' });
+
+});
+app.get('/content', function(request, response) {
+
+    response.render('content' , {
+        username : username,
+        title: 'Content'
+    });
+
+});
+
+
+
+app.post('/register', function (request, response) {
+    const username = request.body.username;
+    const password = request.body.password;
+    const repPassword = request.body.repPassword;
+
+    let errors = [];
+    if (username === "" || username === undefined) {
+        errors.push('Bitte einen Username eingeben.');
+    }
+    if (password === "" || password === undefined) {
+        errors.push('Bitte ein Passwort eingeben.');
+    }
+    if (repPassword === "" || repPassword === undefined) {
+        errors.push('Bitte ein Passwort zur Bestätigung eingeben.');
+    }
+    if (password !== repPassword) {
+        errors.push('Die Passwörter stimmen nicht überein.');
+    }
+
+    //connect to mysql
+
+    mysqlConnect.connect(function(err) {
+        console.log("Connected!");
+
+        //fist check if user exists
+        mysqlConnect.query("SELECT name FROM users WHERE name =" + "'" + username + "'" , function(err, result, fields) {
+
+            // if user exists throw error
+            if (result.length > 0){
+                errors.push("der Benutzer existiert bereits");
+                response.render('errors', {
+                    'error': errors,
+                    title: 'Errors'
+                });
+
+            } else {
+                if (errors.length === 0 ){
+
+                    console.log('no errors, encrypting password');
+                    const encryptedPassword = passwordHash.generate(password);
+
+                    console.log('insert into database...');
+
+                    var sql = "INSERT INTO users (name, password) VALUES ("+ "'" + username + "' , ' " + encryptedPassword +"' )";
+                    mysqlConnect.query(sql, function (err, result) {
+                        if (err) throw err;
+
+                        console.log('user added to database');
+                        response.render('content' , {
+                            username : username,
+                            title: 'Content'
+                        });
+                    });
+
+                } else {
+                    response.render('errors', {
+                        'error': errors,
+                        title: 'Errors'
+                    });
+                }
+            }
+
+        });
+
+    });
+
+});
 
