@@ -1,44 +1,105 @@
-
 <% include partials/head.ejs %>
-
 <% include partials/navigation.ejs %>
 
+<!-- show success message -->
+<% if (message != null) { %>
+<div class="alert alert-success">
+    <h3>
+        <%= message %>
+    </h3>
+</div>
+<% } %>
 
-    <div class="container">
-      <h1><%= title %></h1>
+<!-- show error message -->
 
-      <div class="row">
-        <div class="col-md-6">
-          <h2>Registrierung</h2>
-          <form action="/register" method="post">
-            <div class="form-group">
+<% if (error != null) { %>
+<div class="alert alert-danger">
+    <h3> Huch, das hat leider nicht geklappt </h3>
+    <ul>
+        <% for(var i = 0; i < error.length; i++) { %>
+        <li><%= error[i] %></li>
+        <% } %>
+    </ul>
+</div>
+<% } %>
 
-              <label for="user">Name</label>
-              <input name="username" type="text" class="form-control" id="user" aria-describedby="emailHelp" placeholder="Username">
-              <small id="emailHelp" class="form-text text-muted">blabla hinweis....</small>
 
+<div class="container">
+    <div class="row">
+
+
+        <!-- show registration -->
+        <div class="col-md-4">
+            <div class="well">
+
+                <h2>Registrierung</h2>
+                <form action="/register" method="post">
+                    <div class="form-group">
+
+                        <label for="user">Name</label>
+                        <input name="username" type="text" class="form-control" id="user" aria-describedby="emailHelp"
+                               placeholder="Username">
+                    </div>
+                    <div class="form-group">
+
+                        <label for="password">Passwort</label>
+                        <input name="password" type="password" class="form-control" id="password"
+                               placeholder="Passwort">
+
+                        <label for="repPassword">Passwort wiederholen</label>
+                        <input name="repPassword" type="password" class="form-control" name="repPassword">
+                        <small id="emailHelp" class="form-text text-muted">nur zur Sicherheit :)</small>
+
+
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Rolle auswählen:</label>
+                        <select name="role" class="form-control" id="role">
+                            <optgroup label="ROLLEN">
+                                <option selected="selected" disabled="disabled">Bitte auswählen</option>
+                                <option value="admin">Admin</option>
+                                <option value="lager">Lager</option>
+                                <option value="bar">Bar</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Registrieren</button>
+                </form>
             </div>
-            <div class="form-group">
-
-              <label for="exampleInputPassword1">Passwort</label>
-              <input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Passwort">
-
-              <label for="repPassword">Passwort wiederholen</label>
-              <input name="repPassword" type="password" class="form-control" name="repPassword">
-                <small id="emailHelp" class="form-text text-muted">nur zur Sicherheit :)</small>
-
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
         </div>
 
-      </div>
 
+        <!-- show login -->
+
+        <div class="col-md-4">
+            <div class="well">
+                <h2>Login</h2>
+                <form action="/login" method="post">
+                    <div class="form-group">
+
+                        <label for="login-user">Name</label>
+                        <input name="username" type="text" class="form-control" id="login-user"
+                               aria-describedby="emailHelp"
+                               placeholder="Username">
+
+                    </div>
+                    <div class="form-group">
+
+                        <label for="login-pw">Passwort</label>
+                        <input name="password" type="password" class="form-control" id="login-pw"
+                               placeholder="Passwort">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
 
-    <% include partials/scripts.ejs %>
+<% include partials/scripts.ejs %>
 
-  </body>
+</body>
 
 </html>
