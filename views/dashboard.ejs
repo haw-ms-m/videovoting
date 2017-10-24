@@ -12,18 +12,78 @@
 
 <% if (userRole === 'admin' && authenticated == true) { %>
 
+
+<!-- Modal Register -->
+<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="registerLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h2 class="modal-title" id="registerLabel">Registrierung</h2>
+            </div>
+            <div class="modal-body">
+
+                <!-- show registration -->
+
+                <form action="/register" method="post">
+                    <div class="form-group">
+
+                        <label for="user">Name</label>
+                        <input name="username" type="text" class="form-control" id="user" aria-describedby="emailHelp"
+                               placeholder="Username">
+
+                        <label for="password">Passwort</label>
+                        <input name="password" type="password" class="form-control" id="password"
+                               placeholder="Passwort">
+
+                        <label for="repPassword">Passwort wiederholen</label>
+                        <input name="repPassword" type="password" class="form-control" name="repPassword">
+                        <small id="emailHelp" class="form-text text-muted">nur zur Sicherheit :)</small>
+
+
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Rolle auswählen:</label>
+                        <select name="role" class="form-control" id="role">
+                            <optgroup label="ROLLEN">
+                                <option selected="selected" disabled="disabled">Bitte auswählen</option>
+                                <option value="admin">Admin</option>
+                                <option value="lager">Lager</option>
+                                <option value="bar">Bar</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Registrieren</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <div class="container">
 
-    show admin content
+    <h1>show admin content</h1>
+
+</div>
+
+
+<% } %>
+
+<!-- only visible to bar -->
+
+<% if (userRole === 'bar' && authenticated == true) { %>
+
+<div class="container">
+
+    show bar content
 
 </div>
 
 <% } %>
-
-
-
-
-
 <% include partials/scripts.ejs %>
 
 </body>

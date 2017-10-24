@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var flash = require('flash');
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -15,7 +15,6 @@ app.set('views', path.join(__dirname, 'views'));
 // view engine setup
 app.engine('.ejs', require('ejs').__express);
 app.set('view engine', 'ejs');
-
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -30,6 +29,8 @@ app.use(session({
     resave: false,                  //should be set to false, except store needs it
     saveUninitialized: false        //same reason as above.
 }));
+
+app.use(flash());
 
 //password hash, for encoding the pw
 const passwordHash = require('password-hash');
@@ -52,11 +53,36 @@ app.listen(3000, function () {
 
 // Homepage laden
 app.get('/', function (request, response) {
+
     response.render('index', {
         title: 'Home',
         message: null,
-        error: null
+        error: null,
+        page: request.url
     });
+});
+
+//either go to the landing page (user not logged in) or go to the content page (user logged in)
+app.get('/dashboard', function (request, response) {
+    if (request.session.authenticated) {
+
+        var sessionData = request.session;
+        console.log(sessionData);
+        console.log(request.url);
+
+
+        response.render('dashboard', {
+            username: request.session.username,
+            authenticated: request.session.authenticated,
+            userRole: request.session.userRole,
+            title: 'Dashboard',
+            message: 'Login als ' + request.session.userRole + ' erfolgreich!',
+            error: null,
+            page: request.url
+        });
+    } else {
+        response.redirect('index');
+    }
 });
 
 
@@ -98,7 +124,8 @@ app.post('/register', function (request, response) {
                 response.render('index', {
                     'error': errors,
                     title: 'Errors',
-                    message: null
+                    message: null,
+                    page: request.url
                 });
 
             } else {
@@ -115,12 +142,7 @@ app.post('/register', function (request, response) {
 
                         console.log('user added to database');
 
-                        response.render('index', {
-                            username: username,
-                            title: 'Home',
-                            message: 'Registrierung erfolgreich!',
-                            error: null
-                        });
+                            response.redirect('/dashboard');
 
                     });
 
@@ -128,7 +150,8 @@ app.post('/register', function (request, response) {
                     response.render('index', {
                         'error': errors,
                         title: 'Errors',
-                        message: null
+                        message: null,
+                        page: request.url
                     });
                 }
             }
@@ -146,59 +169,67 @@ app.post('/login', function (request, response) {
 
     let errors = [];
 
-    mysqlConnect.connect(function (err) {
-        console.log("Connected!");
+    if (username === "" || username === undefined) {
+        errors.push('Bitte einen Username eingeben.');
+    }
+    if (password === "" || password === undefined) {
+        errors.push('Bitte ein Passwort eingeben.');
+    }
 
-        // find registered user in database
-        mysqlConnect.query("SELECT * FROM users WHERE name =" + "'" + username + "'", function (err, result, fields) {
+    if (errors.length === 0) {
 
-            console.log(result[0].role);
+        mysqlConnect.connect(function (err) {
+            console.log("Connected!");
 
-            if (result.length < 0) {
-                // user does not exist
-                errors.push("der Benutzer existiert nicht!!");
+            // find registered user in database
+            mysqlConnect.query("SELECT * FROM users WHERE name =" + "'" + username + "'", function (err, result, fields) {
 
-                response.render('index', {
-                    'error': errors,
-                    title: 'Errors',
-                    message: null
-                });
-            } else {
+                console.log(result[0]);
 
-                // if user exists
-                // if entered password is equal to the password in the database
-                if (passwordHash.verify(password, result[0].password)) {
-                    request.session.authenticated = true;
-                    request.session.username = username;
-
-                    var sessionData = request.session;
-
-                    var userRole = result[0].role;
-
-                    console.log(sessionData);
-
-                    // load index with data
-                    response.render('dashboard', {
-                        username: username,
-                        authenticated : true,
-                        userRole : userRole,
-                        title: 'Dashboard',
-                        message: 'Login erfolgreich!',
-                        error: null
-                    });
-
-                } else {
-
-                    errors.push('Das Passwort für diesen User stimmt nicht überein.');
+                if (result.length < 0 || result[0] === undefined) {
+                    // user does not exist
+                    errors.push("der Benutzer existiert nicht!!");
 
                     response.render('index', {
                         'error': errors,
                         title: 'Errors',
-                        message: null
+                        message: null,
+                        page: request.url
                     });
-                }
-            }
+                } else {
 
+                    // if user exists
+                    // if entered password is equal to the password in the database
+                    if (passwordHash.verify(password, result[0].password)) {
+                        request.session.authenticated = true;
+                        request.session.username = username;
+                        request.session.userRole = result[0].role;
+
+                        // redirect to dashboard
+                        response.redirect('/dashboard');
+
+                    } else {
+
+                        errors.push('Das Passwort für diesen User stimmt nicht überein.');
+
+                        response.render('index', {
+                            'error': errors,
+                            title: 'Errors',
+                            message: null,
+                            page: request.url
+                        });
+                    }
+                }
+
+            });
         });
-    });
+
+    } else {
+        response.render('index', {
+            'error': errors,
+            title: 'Errors',
+            message: null,
+            page: request.url
+        });
+    }
 });
