@@ -59,32 +59,6 @@ app.get('/', function (request, response) {
     });
 });
 
-//TODO write login functionality
-
-app.get('/login', function (request, response) {
-
-    response.render('login', {
-        title: 'Login'
-    });
-
-});
-
-app.get('/errors', function (request, response) {
-
-    response.render('errors', {
-        title: 'Errors'
-    });
-
-});
-app.get('/content', function (request, response) {
-
-    response.render('content', {
-        username: username,
-        title: 'Content'
-    });
-
-});
-
 
 app.post('/register', function (request, response) {
     const username = request.body.username;
@@ -178,7 +152,7 @@ app.post('/login', function (request, response) {
         // find registered user in database
         mysqlConnect.query("SELECT * FROM users WHERE name =" + "'" + username + "'", function (err, result, fields) {
 
-            console.log(result[0].password);
+            console.log(result[0].role);
 
             if (result.length < 0) {
                 // user does not exist
@@ -197,10 +171,18 @@ app.post('/login', function (request, response) {
                     request.session.authenticated = true;
                     request.session.username = username;
 
-                    // load index with success message
-                    response.render('index', {
+                    var sessionData = request.session;
+
+                    var userRole = result[0].role;
+
+                    console.log(sessionData);
+
+                    // load index with data
+                    response.render('dashboard', {
                         username: username,
-                        title: 'Home',
+                        authenticated : true,
+                        userRole : userRole,
+                        title: 'Dashboard',
                         message: 'Login erfolgreich!',
                         error: null
                     });

@@ -1,0 +1,31 @@
+<% include partials/head.ejs %>
+<% include partials/navigation.ejs %>
+
+<!-- show success messages -->
+<% include partials/messages.ejs %>
+
+<!-- show error messages -->
+<% include partials/errors.ejs %>
+
+
+<!-- only visible to admin -->
+
+<% if (userRole === 'admin' && authenticated == true) { %>
+
+<div class="container">
+
+    show admin content
+
+</div>
+
+<% } %>
+
+
+
+
+
+<% include partials/scripts.ejs %>
+
+</body>
+
+</html>
