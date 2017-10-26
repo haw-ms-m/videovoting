@@ -1,7 +1,10 @@
-<% if (message != null) { %>
-<div class="alert alert-success">
-    <h3>
+<% if (message != null && message.length > 0) { %>
+
+<div class="alert alert-success notification">
+    <p>
         <%= message %>
-    </h3>
+    </p>
 </div>
+
 <% } %>
+

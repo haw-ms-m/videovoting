@@ -5,3 +5,10 @@ body {
 a {
   color: #00B7FF;
 }
+
+.notification {
+  position: absolute;
+  z-index:10;
+  top: 80px;
+  right: -250px;
+}

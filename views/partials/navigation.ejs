@@ -1,4 +1,4 @@
-<% if (page === '/dashboard') { %>
+<% if (page === '/dashboard' || page === '/register') { %>
 
 
 <nav class="navbar navbar-default">
@@ -36,6 +36,11 @@
                 </div>
                 <button type="submit" class="btn btn-default">suchen</button>
             </form>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a>eingeloggt als: <%= userRole %></a></li>
+                <li><a href="/logout">abmelden</a></li>
+            </ul>
 
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

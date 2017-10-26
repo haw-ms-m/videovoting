@@ -20,7 +20,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h2 class="modal-title" id="registerLabel">Registrierung</h2>
+                <h2 class="modal-title" id="registerLabel">Neue Registrierung</h2>
             </div>
             <div class="modal-body">
 
@@ -57,17 +57,90 @@
 
                     <button type="submit" class="btn btn-primary">Registrieren</button>
                 </form>
-
             </div>
-
         </div>
     </div>
 </div>
+<!-- Modal Register ENDE -->
 
 <div class="container">
 
-    <h1>show admin content</h1>
+    <h1>Lagerbestand</h1>
 
+    <div class="row">
+        <div class="col-xs-2"><h4>ID</h4></div>
+        <div class="col-xs-2"><h4>Getränk</h4></div>
+        <div class="col-xs-2"><h4>Lagerung</h4></div>
+        <div class="col-xs-2"><h4>Anfangsbestand</h4></div>
+        <div class="col-xs-2"><h4>Verbraucht</h4></div>
+        <div class="col-xs-2"><h4>Bearbeiten</h4></div>
+    </div>
+
+    <% for(var i = 0; i < articles.length; i++) { %>
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <!--article details im panel-->
+                    <div class="col-xs-2"><p><%= articles[i].a_id %></p></div>
+                    <div class="col-xs-2"><p><%= articles[i].description %></p></div>
+                    <div class="col-xs-2"><p><%= articles[i].kind %></p></div>
+                    <div class="col-xs-2"><p><%= articles[i].startstock %></p></div>
+                    <div class="col-xs-2"><p><%= articles[i].consumed %></p></div>
+                    <div class="col-xs-2"><a data-toggle="collapse" href="#collapse<%= [i] %>">edit</a></div>
+                </div>
+            </div>
+            <!--panel zum ändern der tabelleneinträge-->
+            <div id="collapse<%= [i] %>" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <!--formular um dieses getränk zu ändern-->
+                    <form action="/update-article" method="post">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-2"></div>
+                                <div class="col-xs-2">
+
+                                    <label for="drink-description">Getränk</label>
+                                    <input name="drink-description-<%= articles[i].a_id %>" type="text" class="form-control"
+                                           id="drink-description"
+                                           aria-describedby="drink-description"
+                                           value="<%= articles[i].description %>">
+                                </div>
+                                <div class="col-xs-2">
+
+                                    <label for="drink-stockkind">Lagerung</label>
+                                    <input name="drink-stockkind-<%= articles[i].a_id %>" type="text"
+                                           class="form-control"
+                                           id="drink-stockkind"
+                                           aria-describedby="drink-stockkind"
+                                           value="<%= articles[i].kind %>">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label for="drink-startstock">Anfangsbestand</label>
+                                    <input name="drink-startstock-<%= articles[i].a_id %>" type="text" class="form-control"
+                                           id="drink-startstock"
+                                           aria-describedby="drink-startstock"
+                                           value="<%= articles[i].startstock %>">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label for="drink-consumed">Verbraucht</label>
+                                    <input name="drink-consumed-<%= articles[i].a_id %>" type="text" class="form-control"
+                                           id="drink-consumed"
+                                           aria-describedby="drink-consumed"
+                                           value="<%= articles[i].consumed %>">
+                                </div>
+                                <div class="col-xs-2">
+                                    <button type="submit" class="btn btn-primary">ändern</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
 </div>
 
 

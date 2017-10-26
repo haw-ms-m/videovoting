@@ -1,11 +1,13 @@
 
 <% if (error != null) { %>
-<div class="alert alert-danger">
-    <h3> Huch, das hat leider nicht geklappt </h3>
-    <ul>
-        <% for(var i = 0; i < error.length; i++) { %>
-        <li><%= error[i] %></li>
-        <% } %>
-    </ul>
+<div class="container">
+    <div class="alert alert-danger">
+        <h3> Das hat leider nicht geklappt </h3>
+        <ul>
+            <% for(var i = 0; i < error.length; i++) { %>
+            <li><%= error[i] %></li>
+            <% } %>
+        </ul>
+    </div>
 </div>
 <% } %>

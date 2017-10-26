@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var flash = require('flash');
+var flash = require('connect-flash');
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -56,7 +56,7 @@ app.get('/', function (request, response) {
 
     response.render('index', {
         title: 'Home',
-        message: null,
+        message: request.flash('message'),
         error: null,
         page: request.url
     });
@@ -64,26 +64,43 @@ app.get('/', function (request, response) {
 
 //either go to the landing page (user not logged in) or go to the content page (user logged in)
 app.get('/dashboard', function (request, response) {
-    if (request.session.authenticated) {
 
-        var sessionData = request.session;
-        console.log(sessionData);
-        console.log(request.url);
+    // show dashboard for the Admin!!!
+    if (request.session.authenticated && request.session.userRole === 'admin') {
 
 
-        response.render('dashboard', {
-            username: request.session.username,
-            authenticated: request.session.authenticated,
-            userRole: request.session.userRole,
-            title: 'Dashboard',
-            message: 'Login als ' + request.session.userRole + ' erfolgreich!',
-            error: null,
-            page: request.url
+        mysqlConnect.connect(function (err) {
+            console.log("Connected!");
+
+                mysqlConnect.query("SELECT * FROM article ORDER BY description ASC ", function (err, result, fields) {
+                    if (err) throw err;
+
+                console.log(result);
+
+                var articleList = result;
+
+                response.render('dashboard', {
+                    articles : articleList,
+                    username: request.session.username,
+                    authenticated: request.session.authenticated,
+                    userRole: request.session.userRole,
+                    title: 'Dashboard',
+                    message: request.flash('message'),
+                    error: null,
+                    page: request.url
+                });
+            });
+
         });
+
+
     } else {
-        response.redirect('index');
+        response.redirect('/');
     }
 });
+
+
+
 
 
 app.post('/register', function (request, response) {
@@ -91,8 +108,6 @@ app.post('/register', function (request, response) {
     const password = request.body.password;
     const repPassword = request.body.repPassword;
     const role = request.body.role;
-
-    console.log(role);
 
     let errors = [];
     if (username === "" || username === undefined) {
@@ -121,9 +136,12 @@ app.post('/register', function (request, response) {
 
                 errors.push("der Benutzer existiert bereits");
 
-                response.render('index', {
+                response.render('dashboard', {
+                    username: request.session.username,
+                    authenticated: request.session.authenticated,
+                    userRole: request.session.userRole,
                     'error': errors,
-                    title: 'Errors',
+                    title: 'Dashboard',
                     message: null,
                     page: request.url
                 });
@@ -142,24 +160,25 @@ app.post('/register', function (request, response) {
 
                         console.log('user added to database');
 
-                            response.redirect('/dashboard');
+                        request.flash('message', 'Neuer Benutzer registriert');
+                        response.redirect('/dashboard');
 
                     });
 
                 } else {
-                    response.render('index', {
+                    response.render('dashboard', {
+                        username: request.session.username,
+                        authenticated: request.session.authenticated,
+                        userRole: request.session.userRole,
                         'error': errors,
-                        title: 'Errors',
+                        title: 'Dashboard',
                         message: null,
                         page: request.url
                     });
                 }
             }
-
         });
-
     });
-
 });
 
 app.post('/login', function (request, response) {
@@ -188,7 +207,7 @@ app.post('/login', function (request, response) {
 
                 if (result.length < 0 || result[0] === undefined) {
                     // user does not exist
-                    errors.push("der Benutzer existiert nicht!!");
+                    errors.push("der Benutzer existiert nicht!");
 
                     response.render('index', {
                         'error': errors,
@@ -205,6 +224,8 @@ app.post('/login', function (request, response) {
                         request.session.username = username;
                         request.session.userRole = result[0].role;
 
+
+                        request.flash('message', 'Sie sind eingeloggt');
                         // redirect to dashboard
                         response.redirect('/dashboard');
 
@@ -232,4 +253,14 @@ app.post('/login', function (request, response) {
             page: request.url
         });
     }
+});
+
+
+//log the user out again and delete his session, redirect to main page
+app.get('/logout', function (request, response) {
+    delete request.session.authenticated;
+    delete request.session.username;
+    delete request.session.userRole;
+    request.flash('message', 'Sie sind ausgeloggt');
+    response.redirect('/');
 });
