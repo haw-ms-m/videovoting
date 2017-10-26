@@ -98,36 +98,39 @@
                     <form action="/update-article" method="post">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-xs-2"></div>
+                                <div class="col-xs-2">
+                                    <!--Verstecktes Feld!! Wichtig für die ID-->
+                                    <input type="hidden" name="articleID" value="<%= articles[i].a_id %>">
+                                     </div>
                                 <div class="col-xs-2">
 
-                                    <label for="drink-description">Getränk</label>
-                                    <input name="drink-description-<%= articles[i].a_id %>" type="text" class="form-control"
-                                           id="drink-description"
-                                           aria-describedby="drink-description"
+                                    <label for="article-description">Getränk</label>
+                                    <input name="articleDescription" type="text" class="form-control"
+                                           id="article-description"
+                                           aria-describedby="article-description"
                                            value="<%= articles[i].description %>">
                                 </div>
                                 <div class="col-xs-2">
 
-                                    <label for="drink-stockkind">Lagerung</label>
-                                    <input name="drink-stockkind-<%= articles[i].a_id %>" type="text"
+                                    <label for="article-stockkind">Lagerung</label>
+                                    <input name="articleStockkind" type="text"
                                            class="form-control"
-                                           id="drink-stockkind"
-                                           aria-describedby="drink-stockkind"
+                                           id="article-stockkind"
+                                           aria-describedby="article-stockkind"
                                            value="<%= articles[i].kind %>">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label for="drink-startstock">Anfangsbestand</label>
-                                    <input name="drink-startstock-<%= articles[i].a_id %>" type="text" class="form-control"
-                                           id="drink-startstock"
-                                           aria-describedby="drink-startstock"
+                                    <label for="article-startstock">Anfangsbestand</label>
+                                    <input name="articleStartstock" type="text" class="form-control"
+                                           id="article-startstock"
+                                           aria-describedby="article-startstock"
                                            value="<%= articles[i].startstock %>">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label for="drink-consumed">Verbraucht</label>
-                                    <input name="drink-consumed-<%= articles[i].a_id %>" type="text" class="form-control"
-                                           id="drink-consumed"
-                                           aria-describedby="drink-consumed"
+                                    <label for="article-consumed">Verbraucht</label>
+                                    <input name="articleConsumed" type="text" class="form-control"
+                                           id="article-consumed"
+                                           aria-describedby="article-consumed"
                                            value="<%= articles[i].consumed %>">
                                 </div>
                                 <div class="col-xs-2">

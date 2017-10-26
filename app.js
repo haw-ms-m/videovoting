@@ -72,15 +72,13 @@ app.get('/dashboard', function (request, response) {
         mysqlConnect.connect(function (err) {
             console.log("Connected!");
 
-                mysqlConnect.query("SELECT * FROM article ORDER BY description ASC ", function (err, result, fields) {
-                    if (err) throw err;
-
-                console.log(result);
+            mysqlConnect.query("SELECT * FROM article ORDER BY description ASC ", function (err, result, fields) {
+                if (err) throw err;
 
                 var articleList = result;
 
                 response.render('dashboard', {
-                    articles : articleList,
+                    articles: articleList,
                     username: request.session.username,
                     authenticated: request.session.authenticated,
                     userRole: request.session.userRole,
@@ -100,7 +98,35 @@ app.get('/dashboard', function (request, response) {
 });
 
 
+//update article
+app.post('/update-article', function (request, response) {
 
+    const articleID = request.body.articleID;
+    const articleDescription = request.body.articleDescription;
+    const articleStockkind = request.body.articleStockkind;
+    const articleStartstock = request.body.articleStartstock;
+    const articleConsumed = request.body.articleConsumed;
+
+    //console.log('\nArtikel:');
+    //console.log(articleDescription + ' ' + articleStockkind + ' ' + articleStartstock + ' ' + articleConsumed + '\n');
+
+    mysqlConnect.connect(function (err) {
+
+        var sql = "UPDATE article SET description=" + "'" + articleDescription + "'" + ", kind=" + "'" + articleStockkind+ "'" +", startstock=" + articleStartstock + ", consumed=" + articleConsumed +" WHERE a_id=" + articleID;
+
+        console.log(sql);
+
+        mysqlConnect.query(sql, function (err, result) {
+            if (err) throw err;
+
+            //console.log(result + " record(s) updated");
+        });
+    });
+
+    request.flash('message', 'Artikel geändert.');
+    response.redirect('/dashboard');
+
+});
 
 
 app.post('/register', function (request, response) {
