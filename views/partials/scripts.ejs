@@ -7,7 +7,26 @@
         var note = $('.notification');
         note.animate({right: '50px'},1000).delay(2000).animate({right: '-250px'}, 1000).fadeOut(500);
 
+
+
+        $('#searchform').keypress(function(){
+
+            console.log('key pressed');
+
+            var current_query = $('#searchform').val();
+
+            $('.panel-group').each(function(){
+                var current_keyword = $(this).attr('data-keyword');
+                if (current_keyword.indexOf(current_query) >= 0 ){
+                    $(this).css('background-color' , 'blue');
+                } else {
+                    console.log('nothing found');
+                }
+            });
+        });
+
     });
+
 
 </script>
 

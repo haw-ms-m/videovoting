@@ -112,7 +112,7 @@ app.post('/update-article', function (request, response) {
 
     mysqlConnect.connect(function (err) {
 
-        var sql = "UPDATE article SET description=" + "'" + articleDescription + "'" + ", kind=" + "'" + articleStockkind+ "'" +", startstock=" + articleStartstock + ", consumed=" + articleConsumed +" WHERE a_id=" + articleID;
+        var sql = "UPDATE article SET description=" + "'" + articleDescription + "'" + ", kind=" + "'" + articleStockkind + "'" + ", startstock=" + articleStartstock + ", consumed=" + articleConsumed + " WHERE a_id=" + articleID;
 
         console.log(sql);
 
