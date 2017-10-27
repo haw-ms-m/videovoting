@@ -88,11 +88,33 @@ app.get('/dashboard', function (request, response) {
                     page: request.url
                 });
             });
-
         });
 
 
-    } else {
+    } else if (request.session.authenticated && request.session.userRole === 'bar') {
+
+        mysqlConnect.connect(function (err) {
+            console.log("Connected!");
+
+            mysqlConnect.query("SELECT a_id, description FROM article ORDER BY description ASC ", function (err, result, fields) {
+
+                var articleList = result;
+
+                response.render('dashboard', {
+                    articles: articleList,
+                    username: request.session.username,
+                    authenticated: request.session.authenticated,
+                    userRole: request.session.userRole,
+                    title: 'Dashboard',
+                    message: request.flash('message'),
+                    error: null,
+                    page: request.url
+                });
+            });
+        });
+    }
+
+    else {
         response.redirect('/');
     }
 });

@@ -12,3 +12,7 @@ a {
   top: 80px;
   right: -250px;
 }
+
+.article__box {
+  min-height: 150px;
+}
