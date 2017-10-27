@@ -42,7 +42,7 @@ var mysql = require('mysql');
 var mysqlConnect = mysql.createConnection({
     host: "www.tetra-jesteburg.de",
     user: "node",
-    password: "123456#",
+    password: "123456",
     database: "node"
 });
 
