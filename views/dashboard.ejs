@@ -101,7 +101,7 @@
                     <form action="/update-article" method="post">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-xs-2">
+                                <div class="col-xs-1">
                                     <!--Verstecktes Feld!! Wichtig für die ID-->
                                     <input type="hidden" name="articleID" value="<%= articles[i].a_id %>">
                                      </div>
@@ -136,8 +136,8 @@
                                            aria-describedby="article-consumed"
                                            value="<%= articles[i].consumed %>">
                                 </div>
-                                <div class="col-xs-2">
-                                    <button type="submit" class="btn btn-primary">ändern</button>
+                                <div class="col-xs-3">
+                                    <button type="submit" class="btn btn-primary btn-block">ändern</button>
                                 </div>
                             </div>
                         </div>
