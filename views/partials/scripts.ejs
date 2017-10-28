@@ -4,17 +4,12 @@
 
 <script>
 
-
-    var ID = $('.input-group').attr('data-id');
-
-    console.log(ID);
+//    Script für die Bestelloberfläche der Bar
 
     $('.btn-number').click(function(e){
         e.preventDefault();
 
-
         var btn = $(this);
-
         fieldName = $(this).attr('data-field');
         type      = $(this).attr('data-type');
         var input = btn.closest('.number-spinner').find('input');
@@ -38,7 +33,6 @@
                 if(parseInt(input.val()) == input.attr('max')) {
                     $(this).attr('disabled', true);
                 }
-
             }
         } else {
             input.val(0);
@@ -66,8 +60,6 @@
             alert('Sorry, the maximum value was reached');
             $(this).val($(this).data('oldValue'));
         }
-
-
     });
 
 </script>
