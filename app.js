@@ -96,7 +96,7 @@ app.get('/dashboard', function (request, response) {
         mysqlConnect.connect(function (err) {
             console.log("Connected!");
 
-            mysqlConnect.query("SELECT a_id, description FROM article ORDER BY description ASC ", function (err, result, fields) {
+            mysqlConnect.query("SELECT a_id, description, startstock FROM article ORDER BY description ASC ", function (err, result, fields) {
 
                 var articleList = result;
 
