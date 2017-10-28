@@ -65,6 +65,7 @@ app.get('/', function (request, response) {
 //either go to the landing page (user not logged in) or go to the content page (user logged in)
 app.get('/dashboard', function (request, response) {
 
+
     // show dashboard for the Admin!!!
     if (request.session.authenticated && request.session.userRole === 'admin') {
 
@@ -117,6 +118,8 @@ app.get('/dashboard', function (request, response) {
     else {
         response.redirect('/');
     }
+
+
 });
 
 
@@ -151,17 +154,44 @@ app.post('/update-article', function (request, response) {
 });
 
 
-app.post('/bar-order', function (request,response) {
-
-    let articleID = request.body.articleID;
-
-    let articles = request.body.articleName;
-
-    console.log(articleID + '\n');
-
-    console.log(articles + '\n');
+app.post('/bar-order', function (request, response) {
 
 
+
+
+    //console.log('IDS length : ' + request.body.articleID.length);
+    //console.log('IDS: ' + request.body.articleID);
+    //console.log('Names length : ' + request.body.articleName.length);
+    //console.log('Names: ' + request.body.articleName);
+
+    var idsArray = Array.prototype.slice.call(request.body.articleID);
+    var amountArray = Array.prototype.slice.call(request.body.articleValue);
+    var articleDescriptionArray = Array.prototype.slice.call(request.body.articleDescription);
+
+    Array.prototype.zip = function (arr) {
+        return this.map(function (e, i) {
+            return [e, arr[i]];
+        })
+    };
+
+    newArray = idsArray.zip(amountArray);
+
+
+    console.log(newArray);
+    console.log(newArray[0][1]);
+
+    // wenn das zweite innere Element eine 0 enthält , lösch das äußere element aus dem Array
+
+    for (var i = 0; i < newArray.length; i++){
+        for (var j = 0; j < 1; j++) {
+
+            if (newArray[i][1] == '0'){
+                newArray.pop(newArray[i]);
+            }
+        }
+    }
+
+    console.log(newArray);
 
     response.redirect('/dashboard');
 
