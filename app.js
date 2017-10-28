@@ -151,6 +151,23 @@ app.post('/update-article', function (request, response) {
 });
 
 
+app.post('/bar-order', function (request,response) {
+
+    let articleID = request.body.articleID;
+
+    let articles = request.body.articleName;
+
+    console.log(articleID + '\n');
+
+    console.log(articles + '\n');
+
+
+
+    response.redirect('/dashboard');
+
+});
+
+
 app.post('/register', function (request, response) {
     const username = request.body.username;
     const password = request.body.password;
