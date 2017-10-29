@@ -180,7 +180,7 @@ app.post('/bar-order', function (request, response) {
 
     newArray = idsArray.zip(amountArray);
     
-    var newArray2 = new Array();
+    //Die Anfangslänge muss hier schon in einer Variablen abgespeichert werden, damit diese weiter unten von der Schleife genutzt werden kann. 
     var length = newArray.length ;
 
 
@@ -191,7 +191,13 @@ app.post('/bar-order', function (request, response) {
 
     // wenn das erste innere Element eine 0 enthält , wird das komplette Element aus dem Array gelöscht!
     for (var i = 0; i < length; i++){
+        //Hier muss immer der erste (nullte) Wert in dem Array geprüft werden und wenn TRUE, gelöscht werden. 
+        //Somit wird immer der erste Wert im Array überprüft. Das funktioniert nur, weil wir das Array sortiert haben
+        //und z.B. an letzter Stelle keine 0 stehen kann!
+        //Sobald die Elemente mit 0 gelöscht wurden, haben wir unser Ziel erreicht.
         if (newArray[0][0] === '0'){
+            //Mit splice wird dann das aktuelle Element, welches gerade geprüft wurde, gelöscht. Der Wert 1 im splice
+            //Befehl bedeutet, dass nur dieses eine Element gelöscht wird.
             newArray.splice(newArray[0][0],1);
         }      
     }
