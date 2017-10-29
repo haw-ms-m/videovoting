@@ -170,25 +170,27 @@ app.post('/bar-order', function (request, response) {
 
     Array.prototype.zip = function (arr) {
         return this.map(function (e, i) {
-            return [e, arr[i]];
+            //return [e, arr[i]];
+            return [arr[i],e ];
         })
     };
 
     newArray = idsArray.zip(amountArray);
+    
+    var newArray2 = new Array();
+    var length = newArray.length ;
 
-
-    console.log(newArray);
-    console.log(newArray[0][1]);
 
     // wenn das zweite innere Element eine 0 enthält , lösch das äußere element aus dem Array
 
-    for (var i = 0; i < newArray.length; i++){
-        for (var j = 0; j < 1; j++) {
-
-            if (newArray[i][1] == '0'){
-                newArray.pop(newArray[i]);
-            }
-        }
+    
+    newArray.sort();
+    //newArray.reverse();
+    
+    for (var i = 0; i < length; i++){
+        if (newArray[0][0] === '0'){
+            newArray.splice(newArray[0][0],1);
+        }      
     }
 
     console.log(newArray);
