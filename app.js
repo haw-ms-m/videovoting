@@ -171,6 +171,9 @@ app.post('/bar-order', function (request, response) {
     Array.prototype.zip = function (arr) {
         return this.map(function (e, i) {
             //return [e, arr[i]];
+            
+            //Die Anzahl der bestellten Artikel befinden sich jetzt an der ersten Stelle im inneren Array.
+            //Die Artikel ID befindet sich nun an der zweiten Stelle. Das macht das Überprüfen mit der Schleife einfacher. 
             return [arr[i],e ];
         })
     };
@@ -181,12 +184,12 @@ app.post('/bar-order', function (request, response) {
     var length = newArray.length ;
 
 
-    // wenn das zweite innere Element eine 0 enthält , lösch das äußere element aus dem Array
-
     
+    
+    //Array sortieren
     newArray.sort();
-    //newArray.reverse();
-    
+
+    // wenn das erste innere Element eine 0 enthält , wird das Element aus dem Array gelöscht!
     for (var i = 0; i < length; i++){
         if (newArray[0][0] === '0'){
             newArray.splice(newArray[0][0],1);
