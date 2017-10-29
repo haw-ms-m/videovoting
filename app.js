@@ -189,7 +189,7 @@ app.post('/bar-order', function (request, response) {
     //Array sortieren
     newArray.sort();
 
-    // wenn das erste innere Element eine 0 enthält , wird das Element aus dem Array gelöscht!
+    // wenn das erste innere Element eine 0 enthält , wird das komplette Element aus dem Array gelöscht!
     for (var i = 0; i < length; i++){
         if (newArray[0][0] === '0'){
             newArray.splice(newArray[0][0],1);
