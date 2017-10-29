@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 var app = express();
+var moment = require('moment');
 
 app.set('views', path.join(__dirname, 'views'));
 
@@ -202,14 +203,13 @@ app.post('/bar-order', function (request, response) {
         }
     }
 
-    console.log(newArray);
 
     var currentUserId = request.session.userId;
     var date = new Date();
-    var timestamp = date.getTime();
+    var time = date.getTime();
 
-    console.log(timestamp);
-
+    //var dateString = moment.unix(time).format("YYYY-MM-DD HH:MM:SS");
+    //console.log(dateString);
 
     // Zuerst Orders abfragen
     mysqlConnect.connect(function (err) {
@@ -219,29 +219,33 @@ app.post('/bar-order', function (request, response) {
             // Zählen wie viele Bestellungen es gibt
             // Ergebnis in variable Speichern
             var countOrders = result.length;
+            console.log(countOrders);
 
             //Hier muss bei der Order ID mit der Variablen hochgezählt werden einen hochgezählt werden.
             //Als id muss die User ID des aktuell bearbeitenden Benutzer eingetragen werden z.B. in die Variable $id!
 
             var newCountOrders = countOrders +1; // erledigt
+            console.log(newCountOrders);
 
             //verbinde mit SQL und übergebe Order
-            var orderSql = "INSERT INTO orders (o_id,status,id,datetime) VALUES(" + newCountOrders + ',' + 'Nicht bearbeitet' + ',' + currentUserId + ',' + timestamp + ")";
+            var orderSql = "INSERT INTO orders (o_id,status,id,datetime) VALUES(" + newCountOrders + ',' + " 'Nicht bearbeitet' " + ',' + currentUserId + ',' + time + ")";
+            console.log(orderSql);
 
             mysqlConnect.query(orderSql, function (err, result, fields) {
 
                 console.log('order added to database');
 
                 // Zählschleife um jede Bestellung nacheinander in die Datenbank einzutragen
-                for (var k = 0; k < newArray.length; k++) {
+                for (var k = 0; k < newArray.length; k ++) {
 
                     console.log('Amount=' + newArray[k][0]);
                     console.log('Article Nr. =' + newArray[k][1]);
 
-                    var newOrderID = newCountOrders + k + 1; // plus 1 weil schleife bei 0 anfängt sonst stimmt die order ID nicht
-
+                    var newOrderID = newCountOrders;
+                    console.log('newOrderID '+ newOrderID);
                     //o_id muss aus der Variablen ausgelesen werden. -> hab ich übernommen,  amount ist die Anzahl der Artikel die bestellt wird. hier ist das newArray[k][0]
                     var positionSQL = "INSERT INTO positions (o_id,a_id,amount) VALUES (" + newOrderID+ ',' + newArray[k][1]+ ',' + newArray[k][0] + ")";
+
                     mysqlConnect.query(positionSQL , function (err, result_id, fields) {
                         if (err) throw err;
 
