@@ -166,32 +166,32 @@ app.post('/bar-order', function (request, response) {
 
     var idsArray = Array.prototype.slice.call(request.body.articleID);
     var amountArray = Array.prototype.slice.call(request.body.articleValue);
-    var articleDescriptionArray = Array.prototype.slice.call(request.body.articleDescription);
+    //var articleDescriptionArray = Array.prototype.slice.call(request.body.articleDescription);
 
     Array.prototype.zip = function (arr) {
         return this.map(function (e, i) {
             //return [e, arr[i]];
-            
+
             //Die Anzahl der bestellten Artikel befinden sich jetzt an der ersten Stelle im inneren Array.
-            //Die Artikel ID befindet sich nun an der zweiten Stelle. Das macht das Überprüfen mit der Schleife einfacher. 
+            //Die Artikel ID befindet sich nun an der zweiten Stelle. Das macht das Überprüfen mit der Schleife einfacher.
             return [arr[i],e ];
         })
     };
 
     newArray = idsArray.zip(amountArray);
-    
-    //Die Anfangslänge muss hier schon in einer Variablen abgespeichert werden, damit diese weiter unten von der Schleife genutzt werden kann. 
+
+    //Die Anfangslänge muss hier schon in einer Variablen abgespeichert werden, damit diese weiter unten von der Schleife genutzt werden kann.
     var length = newArray.length ;
 
 
-    
-    
+
+
     //Array sortieren
     newArray.sort();
 
     // wenn das erste innere Element eine 0 enthält , wird das komplette Element aus dem Array gelöscht!
     for (var i = 0; i < length; i++){
-        //Hier muss immer der erste (nullte) Wert in dem Array geprüft werden und wenn TRUE, gelöscht werden. 
+        //Hier muss immer der erste (nullte) Wert in dem Array geprüft werden und wenn TRUE, gelöscht werden.
         //Somit wird immer der erste Wert im Array überprüft. Das funktioniert nur, weil wir das Array sortiert haben
         //und z.B. an letzter Stelle keine 0 stehen kann!
         //Sobald die Elemente mit 0 gelöscht wurden, haben wir unser Ziel erreicht.
@@ -199,11 +199,63 @@ app.post('/bar-order', function (request, response) {
             //Mit splice wird dann das aktuelle Element, welches gerade geprüft wurde, gelöscht. Der Wert 1 im splice
             //Befehl bedeutet, dass nur dieses eine Element gelöscht wird.
             newArray.splice(newArray[0][0],1);
-        }      
+        }
     }
 
     console.log(newArray);
 
+    var currentUserId = request.session.userId;
+    var date = new Date();
+    var timestamp = date.getTime();
+
+    console.log(timestamp);
+
+
+    // Zuerst Orders abfragen
+    mysqlConnect.connect(function (err) {
+        mysqlConnect.query("SELECT id FROM orders", function (err, result, fields) {
+            if (err) throw err;
+
+            // Zählen wie viele Bestellungen es gibt
+            // Ergebnis in variable Speichern
+            var countOrders = result.length;
+
+            //Hier muss bei der Order ID mit der Variablen hochgezählt werden einen hochgezählt werden.
+            //Als id muss die User ID des aktuell bearbeitenden Benutzer eingetragen werden z.B. in die Variable $id!
+
+            var newCountOrders = countOrders +1; // erledigt
+
+            //verbinde mit SQL und übergebe Order
+            var orderSql = "INSERT INTO orders (o_id,status,id,datetime) VALUES(" + newCountOrders + ',' + 'Nicht bearbeitet' + ',' + currentUserId + ',' + timestamp + ")";
+
+            mysqlConnect.query(orderSql, function (err, result, fields) {
+
+                console.log('order added to database');
+
+                // Zählschleife um jede Bestellung nacheinander in die Datenbank einzutragen
+                for (var k = 0; k < newArray.length; k++) {
+
+                    console.log('Amount=' + newArray[k][0]);
+                    console.log('Article Nr. =' + newArray[k][1]);
+
+                    var newOrderID = newCountOrders + k + 1; // plus 1 weil schleife bei 0 anfängt sonst stimmt die order ID nicht
+
+                    //o_id muss aus der Variablen ausgelesen werden. -> hab ich übernommen,  amount ist die Anzahl der Artikel die bestellt wird. hier ist das newArray[k][0]
+                    var positionSQL = "INSERT INTO positions (o_id,a_id,amount) VALUES (" + newOrderID+ ',' + newArray[k][1]+ ',' + newArray[k][0] + ")";
+                    mysqlConnect.query(positionSQL , function (err, result_id, fields) {
+                        if (err) throw err;
+
+                        console.log('position added to database');
+
+                    });
+                }
+
+            });
+        });
+    });
+
+
+    request.flash('message', 'Neue Datensätze eingetragen');
     response.redirect('/dashboard');
 
 });
@@ -329,6 +381,7 @@ app.post('/login', function (request, response) {
                         request.session.authenticated = true;
                         request.session.username = username;
                         request.session.userRole = result[0].role;
+                        request.session.userId = result[0].id;
 
 
                         request.flash('message', 'Sie sind eingeloggt');
