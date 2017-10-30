@@ -189,7 +189,7 @@
         <div class="row">
             <% for(var i = 0; i < articles.length; i++) { %>
             <!--Vierspaltiges Layout-->
-            <div class="col-xs-3">
+            <div class="col-xs-4 col-sm-2 col-half-offset">
                 <!--Grauer Kasten-->
                 <div class="well article__box">
 
@@ -197,7 +197,7 @@
                     <input type="hidden" name="articleID" value="<%= articles[i].a_id %>">
                     <input type="hidden" name="articleDescription" value="<%= articles[i].description %>">
 
-                    <h2><%= articles[i].description %></h2>
+                    <h2 class="title"><%= articles[i].description %></h2>
 
                     <div class="input-group number-spinner">
                         <span class="input-group-btn">

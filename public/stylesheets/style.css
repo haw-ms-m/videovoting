@@ -15,5 +15,22 @@ a {
 
 .article__box {
   min-height: 200px;
+  padding: 10px;
 }
+h2 {
+  font-size: 20px;
+}
+/* für Tablet und größere Formate - 5 Spalten erzwingen */
+@media (min-width: 768px){
+  .article__box {
+    min-height: 160px;
+  }
+  .col-half-offset{
+    margin-left: 0.166667%;
+  }
+  .col-sm-2 {
+    width: 19.666667%;
+  }
+}
+
 
