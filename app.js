@@ -228,7 +228,7 @@ app.post('/bar-order', function (request, response) {
             console.log(newCountOrders);
 
             //verbinde mit SQL und übergebe Order
-            var orderSql = "INSERT INTO orders (o_id,status,id,datetime) VALUES(" + newCountOrders + ',' + " 'Nicht bearbeitet' " + ',' + currentUserId + ',' + time + ")";
+            var orderSql = "INSERT INTO orders (o_id,status,id,datetime) VALUES(" + newCountOrders + ',' + " 'Nicht bearbeitet' " + ',' + currentUserId + ',' + " CURRENT_TIMESTAMP "+ ")";
             console.log(orderSql);
 
             mysqlConnect.query(orderSql, function (err, result, fields) {
