@@ -93,7 +93,7 @@ app.get('/dashboard', function (request, response) {
         mysqlConnect.connect(function (err) {
             console.log("Connected!");
 
-            mysqlConnect.query("SELECT a_id, description, startstock FROM article ORDER BY description ASC ", function (err, result, fields) {
+            mysqlConnect.query("SELECT * FROM article ORDER BY description ASC ", function (err, result, fields) {
 
                 var articleList = result;
 
@@ -223,6 +223,10 @@ app.post('/bar-order', function (request, response) {
 
     // Zuerst Orders abfragen
     mysqlConnect.connect(function (err) {
+
+        //
+
+
         mysqlConnect.query("SELECT id FROM orders", function (err, result, fields) {
             if (err) throw err;
 
@@ -277,8 +281,7 @@ app.post('/bar-order', function (request, response) {
                         //Neuen Wert für Consumed errechnen und in Variable speichern.
                         var newconsumed = result_id_a[0].consumed + orderconsumed ;
                         console.log("Intern" ,newconsumed); 
-                        
-                        // Infbedingung einfügen
+
 
                         //Neuen Comsumed-Wert in die Datenbank schreiben.
                         var articleconsumedSQLinsert = "UPDATE article SET consumed = " + newconsumed + " WHERE a_id = "+ artnr + "";
@@ -289,14 +292,6 @@ app.post('/bar-order', function (request, response) {
                         });
                        
                     });
-
-                    
-                    
-                   
-
-
-
-
                     
                 }
 

@@ -189,6 +189,8 @@
         <!--Bestelloberfläche-->
         <div class="row">
             <% for(var i = 0; i < articles.length; i++) { %>
+
+            <% var availableStockValue = articles[i].startstock - articles[i].consumed %>
             <!--Vierspaltiges Layout-->
             <div class="col-xs-6 col-sm-2 col-md-2 col-half-offset">
                 <!--Grauer Kasten-->
@@ -208,7 +210,7 @@
                             </button>
                         </span>
 
-                            <input id="<%= articles[i].a_id %>" type="text" name="articleValue" class="form-control input-number" value="0" min="0" max="<%= articles[i].startstock %>">
+                            <input id="<%= articles[i].a_id %>" type="text" name="articleValue" class="form-control input-number" value="0" min="0" max="<%= availableStockValue %>">
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="articleValue">
                                     <span class="glyphicon glyphicon-plus"></span>
