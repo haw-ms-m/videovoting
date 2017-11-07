@@ -255,13 +255,49 @@ app.post('/bar-order', function (request, response) {
                     console.log('newOrderID '+ newOrderID);
                     //o_id muss aus der Variablen ausgelesen werden. -> hab ich übernommen,  amount ist die Anzahl der Artikel die bestellt wird. hier ist das newArray[k][0]
                     var positionSQL = "INSERT INTO positions (o_id,a_id,amount) VALUES (" + newOrderID+ ',' + newArray[k][1]+ ',' + newArray[k][0] + ")";
+                    
+                    //Consumed Wert zur errechnung des neuen Wertes auslesen.
+                    var articleconsumedSQLselect = "SELECT consumed FROM article WHERE a_id = "+ newArray[k][1] +"";
 
                     mysqlConnect.query(positionSQL , function (err, result_id, fields) {
                         if (err) throw err;
 
                         console.log('position added to database');
-
                     });
+
+                    //Variablen zu Berechnung des neuen Consumed-Wert
+                    var orderconsumed = parseInt(newArray[k][0]) ;
+                    var artnr = newArray[k][1] ;
+
+                    mysqlConnect.query(articleconsumedSQLselect , function (err, result_id_a, fields) {
+                        if (err) throw err;
+
+                        console.log(result_id_a[0].consumed, orderconsumed );
+                       
+                        //Neuen Wert für Consumed errechnen und in Variable speichern.
+                        var newconsumed = result_id_a[0].consumed + orderconsumed ;
+                        console.log("Intern" ,newconsumed); 
+                        
+                        // Infbedingung einfügen
+
+                        //Neuen Comsumed-Wert in die Datenbank schreiben.
+                        var articleconsumedSQLinsert = "UPDATE article SET consumed = " + newconsumed + " WHERE a_id = "+ artnr + "";
+                        console.log(articleconsumedSQLinsert) ;
+                        mysqlConnect.query(articleconsumedSQLinsert , function (err, result_id_a_insert, fields) {
+                            if (err) throw err;
+                            console.log("Consumed erfolgreich aktualisiert:",newconsumed );                   
+                        });
+                       
+                    });
+
+                    
+                    
+                   
+
+
+
+
+                    
                 }
 
             });
