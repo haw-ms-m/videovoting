@@ -149,6 +149,26 @@ app.post('/update-article', function (request, response) {
 
 });
 
+app.post('/delete-article', function (request, response) {
+
+    const articleID = request.body.articleID;
+
+    mysqlConnect.connect( function (err) {
+        var sql = "DELETE FROM article WHERE a_id=" + articleID;
+
+        mysqlConnect.query(sql, function (err, result) {
+            if (err) throw err;
+
+            console.log(result + " gelöscht");
+        });
+    });
+
+
+    request.flash('message', 'Artikel gelöscht.');
+    response.redirect('/dashboard');
+
+});
+
 
 app.post('/bar-order', function (request, response) {
 

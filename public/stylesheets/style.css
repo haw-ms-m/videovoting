@@ -20,8 +20,9 @@ a {
 h2 {
   font-size: 20px;
 }
+
 /* für Tablet und größere Formate - 5 Spalten erzwingen */
-@media (min-width: 768px){
+@media (min-width: 1024px){
   .article__box {
     min-height: 160px;
   }

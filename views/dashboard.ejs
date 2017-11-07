@@ -124,7 +124,7 @@
             <div id="collapse<%= [i] %>" class="panel-collapse collapse">
                 <div class="panel-body">
                     <!--formular um dieses getränk zu ändern-->
-                    <form action="/update-article" method="post">
+                    <form action="" method="post">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-xs-1">
@@ -163,7 +163,8 @@
                                            value="<%= articles[i].consumed %>">
                                 </div>
                                 <div class="col-xs-3">
-                                    <button type="submit" class="btn btn-primary btn-block">ändern</button>
+                                    <button formaction="/update-article" type="submit" class="btn btn-primary btn-block">ändern</button>
+                                    <button formaction="/delete-article" onClick="return confirm('wirklich löschen?')" type="submit" class="btn btn-danger btn-block">löschen</button>
                                 </div>
                             </div>
                         </div>
@@ -189,7 +190,7 @@
         <div class="row">
             <% for(var i = 0; i < articles.length; i++) { %>
             <!--Vierspaltiges Layout-->
-            <div class="col-xs-4 col-sm-2 col-half-offset">
+            <div class="col-xs-6 col-sm-2 col-md-2 col-half-offset">
                 <!--Grauer Kasten-->
                 <div class="well article__box">
 
