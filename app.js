@@ -81,7 +81,7 @@ app.get('/dashboard', function (request, response) {
                     userRole: request.session.userRole,
                     title: 'Dashboard',
                     message: request.flash('message'),
-                    error: null,
+                    error: request.flash('error'),
                     page: request.url
                 });
             });
@@ -190,7 +190,7 @@ app.post('/delete-article', function (request, response) {
         var sql = "DELETE FROM article WHERE a_id=" + articleID;
         mysqlConnect.query(sql, function (err, result) {
             if (err) {
-                request.flash('message', 'Atrikel kann nicht gelöscht werden, da dieser in einer Bestellung vorhanden ist!');
+                request.flash('error', 'Atrikel kann nicht gelöscht werden, da dieser in einer Bestellung vorhanden ist!');
                 response.redirect('/dashboard');
             }
             else{
