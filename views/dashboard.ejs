@@ -324,75 +324,77 @@
         <div class="col-xs-2"><h4>Status aktualieren</h4></div>
     </div>
     <% for(var i = 0; i < stock.length; i++) { %>
-
-    <div class="panel-group">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <!--article details im panel-->
-                    <input type="hidden" name="orderID" value="<%= stock[i].o_id %>">
-                    <div class="col-xs-1"><p><%= stock[i].o_id %></p></div>
-                    <div class="col-xs-2"><p><%= stock[i].name %></p></div>
-                    <div class="col-xs-2"><p><%= stock[i].datetime %></p></div>
-                    <div class="col-xs-2"><p><%= stock[i].status %></p></div>
-                    <div class="col-xs-1"><a data-toggle="collapse" href="#collapse<%= [i] %>">Anzeigen</a></div>
-                    <div class="col-xs-2">
-                        <div class="form-group">
-                            <select name="changestatus" class="form-control" id="changestatus">
-                                <optgroup label="Status">
-                                    <option selected="selected" disabled="disabled">Bitte auswählen</option>
-                                    <option value="Wird bearbeitet">Wird bearbeitet</option>
-                                    <option value="Fertig">Fertig</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-xs-2">
-                        <button formaction="/update-order" type="submit"
-                        class="btn btn-primary btn-block">ändern
-                        </button>
-                    </div>
-                    
-                </div>
-            </div>
-            <!--panel zum ändern der tabelleneinträge-->
-            <div id="collapse<%= [i] %>" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <!--formular um dieses getränk zu ändern-->
-                    <form action="" method="post">
-                        <div class="form-group">
-                            <div class="row">
-
-                                <!--Verstecktes Feld!! Wichtig für die ID-->
-                                <input type="hidden" name="articleID" value="<%= stock[i].o_id %>">
-
-                                <h4>Details:</h4>
-                                <% for(var k = 0; k < positions.length; k++) { %>
-                                <% if (positions[k].o_id === stock[i].o_id) { %>
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        Artikel:
-                                        <%= positions[k].description %>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        Anzahl:
-                                        <%= positions[k].amount %>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        Lagerung:
-                                        <%= positions[k].kind %>
-                                    </div>
-                                </div>
-                                <% } %>
-                                <% } %>
-
+    <form action="" method="post">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <!--article details im panel-->
+                        <input type="hidden" name="orderID" value="<%= stock[i].o_id %>">
+                        <div class="col-xs-1"><p><%= stock[i].o_id %></p></div>
+                        <div class="col-xs-2"><p><%= stock[i].name %></p></div>
+                        <div class="col-xs-2"><p><%= stock[i].datetime %></p></div>
+                        <div class="col-xs-2"><p><%= stock[i].status %></p></div>
+                        <div class="col-xs-1"><a data-toggle="collapse" href="#collapse<%= [i] %>">Anzeigen</a></div>
+                        <div class="col-xs-2">
+                            <div class="form-group">
+                                <select name="changestatus" class="form-control" id="changestatus">
+                                    <optgroup label="Status">
+                                        <option selected="selected" disabled="disabled">Bitte auswählen</option>
+                                        <option value="Wird bearbeitet">Wird bearbeitet</option>
+                                        <option value="Fertig">Fertig</option>
+                                    </optgroup>
+                                </select>
                             </div>
                         </div>
-                    </form>
+                        <div class="col-xs-2">
+                            <button formaction="/update-order" type="submit"
+                                    class="btn btn-primary btn-block">ändern
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+                <!--panel zum ändern der tabelleneinträge-->
+                <div id="collapse<%= [i] %>" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <!--formular um dieses getränk zu ändern-->
+                        <form action="" method="post">
+                            <div class="form-group">
+                                <div class="row">
+
+                                    <!--Verstecktes Feld!! Wichtig für die ID-->
+                                    <input type="hidden" name="articleID" value="<%= stock[i].o_id %>">
+
+                                    <h4>Details:</h4>
+                                    <% for(var k = 0; k < positions.length; k++) { %>
+                                    <% if (positions[k].o_id === stock[i].o_id) { %>
+                                    <div class="row">
+                                        <div class="col-xs-2">
+                                            Artikel:
+                                            <%= positions[k].description %>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            Anzahl:
+                                            <%= positions[k].amount %>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            Lagerung:
+                                            <%= positions[k].kind %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                    <% } %>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+    </form>
     <% } %>
 </div>
 

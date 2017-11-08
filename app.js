@@ -161,6 +161,7 @@ app.post('/update-order', function (request, response) {
 
     mysqlConnect.connect(function (err) {
         var sql = "UPDATE orders SET status = " + changestatus + " WHERE o_id = " + orderID + "";
+        console.log(sql);
 
         mysqlConnect.query(sql, function (err, result) {
             if (err) throw err;
