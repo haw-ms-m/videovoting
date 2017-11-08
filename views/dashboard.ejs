@@ -163,8 +163,12 @@
                                            value="<%= articles[i].consumed %>">
                                 </div>
                                 <div class="col-xs-3">
-                                    <button formaction="/update-article" type="submit" class="btn btn-primary btn-block">ändern</button>
-                                    <button formaction="/delete-article" onClick="return confirm('wirklich löschen?')" type="submit" class="btn btn-danger btn-block">löschen</button>
+                                    <button formaction="/update-article" type="submit"
+                                            class="btn btn-primary btn-block">ändern
+                                    </button>
+                                    <button formaction="/delete-article" onClick="return confirm('wirklich löschen?')"
+                                            type="submit" class="btn btn-danger btn-block">löschen
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -181,7 +185,7 @@
 
 <!-- only visible to bar -->
 
-<% if (userRole === 'bar' && authenticated == true) { %>
+<% if (userRole === 'bar' && authenticated === true) { %>
 
 <div class="container">
 
@@ -204,15 +208,18 @@
 
                     <div class="input-group number-spinner">
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default btn-number" disabled="disabled" data-type="minus"
-                              data-field="articleValue">
+                            <button type="button" class="btn btn-default btn-number" disabled="disabled"
+                                    data-type="minus"
+                                    data-field="articleValue">
                                 <span class="glyphicon glyphicon-minus"></span>
                             </button>
                         </span>
 
-                            <input id="<%= articles[i].a_id %>" type="text" name="articleValue" class="form-control input-number" value="0" min="0" max="<%= availableStockValue %>">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="articleValue">
+                        <input id="<%= articles[i].a_id %>" type="text" name="articleValue"
+                               class="form-control input-number" value="0" min="0" max="<%= availableStockValue %>">
+                        <span class="input-group-btn">
+                                <button type="button" class="btn btn-default btn-number" data-type="plus"
+                                        data-field="articleValue">
                                     <span class="glyphicon glyphicon-plus"></span>
                                 </button>
                         </span>
@@ -233,6 +240,77 @@
     <br>
 
 </div>
+
+<% } %>
+<% if (userRole === 'lager' && authenticated === true) { %>
+
+<div class="container">
+
+    <h1>Bestellungen</h1>
+
+    <div class="row">
+        <div class="col-xs-1"><h4>ID</h4></div>
+        <div class="col-xs-2"><h4>Bar</h4></div>
+        <div class="col-xs-2"><h4>Datum</h4></div>
+        <div class="col-xs-2"><h4>Status</h4></div>
+
+        <div class="col-xs-1"><h4>Bearbeiten</h4></div>
+    </div>
+    <% for(var i = 0; i < stock.length; i++) { %>
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <!--article details im panel-->
+                    <div class="col-xs-1"><p><%= stock[i].o_id %></p></div>
+                    <div class="col-xs-2"><p><%= stock[i].name %></p></div>
+                    <div class="col-xs-2"><p><%= stock[i].datetime %></p></div>
+                    <div class="col-xs-2"><p><%= stock[i].status %></p></div>
+                    <div class="col-xs-1"><a data-toggle="collapse" href="#collapse<%= [i] %>">details</a></div>
+                </div>
+            </div>
+            <!--panel zum ändern der tabelleneinträge-->
+            <div id="collapse<%= [i] %>" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <!--formular um dieses getränk zu ändern-->
+                    <form action="" method="post">
+                        <div class="form-group">
+                            <div class="row">
+
+                                <!--Verstecktes Feld!! Wichtig für die ID-->
+                                <input type="hidden" name="articleID" value="<%= stock[i].o_id %>">
+
+                                <h4>Details:</h4>
+                                <% for(var k = 0; k < positions.length; k++) { %>
+                                <% if (positions[k].o_id === stock[i].o_id) { %>
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        Artikel:
+                                        <%= positions[k].description %>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        Anzahl:
+                                        <%= positions[k].amount %>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        Lagerung:
+                                        <%= positions[k].kind %>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <% } %>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</div>
+
 
 <% } %>
 <% include partials/scripts.ejs %>
