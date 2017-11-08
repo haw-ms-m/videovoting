@@ -157,15 +157,15 @@ app.post('/update-order', function (request, response) {
         const orderID = request.body.orderID;
         var changestatus = request.body.changestatus;
 
-        console.log(orderID);
+        console.log(orderID,changestatus);
     
         mysqlConnect.connect(function (err) {
-            var sql = "UPDATE orders SET status = " + changestatus + " WHERE o_id = " + orderID + "";
-            
+            var sql = "UPDATE orders SET status = '" + changestatus + "' WHERE o_id = " + orderID + "";
+            console.log(sql);
             mysqlConnect.query(sql, function (err, result) {
                 if (err) throw err;
                 else{
-                    console.log(result + " gelöscht");
+                    console.log(result + " geändert");
                     request.flash('message', 'Status geändert.');
                     response.redirect('/dashboard');
                 }
