@@ -53,7 +53,7 @@ app.get('/', function (request, response) {
     response.render('index', {
         title: 'Home',
         message: request.flash('message'),
-        error: null,
+        error: request.flash('error'),
         page: request.url
     });
 });
@@ -81,7 +81,7 @@ app.get('/dashboard', function (request, response) {
                     userRole: request.session.userRole,
                     title: 'Dashboard',
                     message: request.flash('message'),
-                    error: null,
+                    error: request.flash('error'),
                     page: request.url
                 });
             });
@@ -104,7 +104,7 @@ app.get('/dashboard', function (request, response) {
                     userRole: request.session.userRole,
                     title: 'Dashboard',
                     message: request.flash('message'),
-                    error: null,
+                    error: request.flash('error'),
                     page: request.url
                 });
             });
@@ -134,7 +134,7 @@ app.get('/dashboard', function (request, response) {
                         userRole: request.session.userRole,
                         title: 'Dashboard',
                         message: request.flash('message'),
-                        error: null,
+                        error: request.flash('error'),
                         page: request.url
                     });
                 });
@@ -153,26 +153,26 @@ app.get('/dashboard', function (request, response) {
 
 
 app.post('/update-order', function (request, response) {
-    
-        const orderID = request.body.orderID;
-        var changestatus = request.body.changestatus;
 
-        console.log(orderID,changestatus);
-    
-        mysqlConnect.connect(function (err) {
-            var sql = "UPDATE orders SET status = '" + changestatus + "' WHERE o_id = " + orderID + "";
-            console.log(sql);
-            mysqlConnect.query(sql, function (err, result) {
-                if (err) throw err;
-                else{
-                    console.log(result + " geändert");
-                    request.flash('message', 'Status geändert.');
-                    response.redirect('/dashboard');
-                }
-                
-            });
+    const orderID = request.body.orderID;
+    var changestatus = request.body.changestatus;
+
+    console.log(orderID);
+
+    mysqlConnect.connect(function (err) {
+        var sql = "UPDATE orders SET status = " + changestatus + " WHERE o_id = " + orderID + "";
+
+        mysqlConnect.query(sql, function (err, result) {
+            if (err) throw err;
+            else {
+                console.log(result + " gelöscht");
+                request.flash('message', 'Status geändert.');
+                response.redirect('/dashboard');
+            }
+
         });
     });
+});
 
 
 
@@ -214,7 +214,7 @@ app.post('/delete-article', function (request, response) {
         var sql = "DELETE FROM article WHERE a_id=" + articleID;
         mysqlConnect.query(sql, function (err, result) {
             if (err) {
-                request.flash('message', 'Atrikel kann nicht gelöscht werden, da dieser in einer Bestellung vorhanden ist!');
+                request.flash('error', 'Atrikel kann nicht gelöscht werden, da dieser in einer Bestellung vorhanden ist!');
                 response.redirect('/dashboard');
             }
             else{
