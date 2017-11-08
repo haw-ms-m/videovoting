@@ -152,6 +152,30 @@ app.get('/dashboard', function (request, response) {
 });
 
 
+app.post('/update-order', function (request, response) {
+    
+        const orderID = request.body.orderID;
+        var changestatus = request.body.changestatus;
+
+        console.log(orderID);
+    
+        mysqlConnect.connect(function (err) {
+            var sql = "UPDATE orders SET status = " + changestatus + " WHERE o_id = " + orderID + "";
+            
+            mysqlConnect.query(sql, function (err, result) {
+                if (err) throw err;
+                else{
+                    console.log(result + " gelöscht");
+                    request.flash('message', 'Status geändert.');
+                    response.redirect('/dashboard');
+                }
+                
+            });
+        });
+    });
+
+
+
 //update article
 app.post('/update-article', function (request, response) {
 

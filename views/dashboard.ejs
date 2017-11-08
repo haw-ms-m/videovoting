@@ -319,8 +319,9 @@
         <div class="col-xs-2"><h4>Bar</h4></div>
         <div class="col-xs-2"><h4>Datum</h4></div>
         <div class="col-xs-2"><h4>Status</h4></div>
-
-        <div class="col-xs-1"><h4>Bearbeiten</h4></div>
+        <div class="col-xs-1"><h4>Inhalt</h4></div>
+        <div class="col-xs-2"><h4>Status ändern</h4></div>
+        <div class="col-xs-2"><h4>Status aktualieren</h4></div>
     </div>
     <% for(var i = 0; i < stock.length; i++) { %>
 
@@ -329,11 +330,29 @@
             <div class="panel-heading">
                 <div class="row">
                     <!--article details im panel-->
+                    <input type="hidden" name="orderID" value="<%= stock[i].o_id %>">
                     <div class="col-xs-1"><p><%= stock[i].o_id %></p></div>
                     <div class="col-xs-2"><p><%= stock[i].name %></p></div>
                     <div class="col-xs-2"><p><%= stock[i].datetime %></p></div>
                     <div class="col-xs-2"><p><%= stock[i].status %></p></div>
-                    <div class="col-xs-1"><a data-toggle="collapse" href="#collapse<%= [i] %>">details</a></div>
+                    <div class="col-xs-1"><a data-toggle="collapse" href="#collapse<%= [i] %>">Anzeigen</a></div>
+                    <div class="col-xs-2">
+                        <div class="form-group">
+                            <select name="changestatus" class="form-control" id="changestatus">
+                                <optgroup label="Status">
+                                    <option selected="selected" disabled="disabled">Bitte auswählen</option>
+                                    <option value="Wird bearbeitet">Wird bearbeitet</option>
+                                    <option value="Fertig">Fertig</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <button formaction="/update-order" type="submit"
+                        class="btn btn-primary btn-block">ändern
+                        </button>
+                    </div>
+                    
                 </div>
             </div>
             <!--panel zum ändern der tabelleneinträge-->
