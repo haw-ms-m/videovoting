@@ -53,7 +53,7 @@ app.get('/', function (request, response) {
     response.render('index', {
         title: 'Home',
         message: request.flash('message'),
-        error: request.flash('error'),
+        error: null,
         page: request.url
     });
 });
@@ -81,7 +81,7 @@ app.get('/dashboard', function (request, response) {
                     userRole: request.session.userRole,
                     title: 'Dashboard',
                     message: request.flash('message'),
-                    error: request.flash('error'),
+                    error: null,
                     page: request.url
                 });
             });
@@ -153,26 +153,27 @@ app.get('/dashboard', function (request, response) {
 
 
 app.post('/update-order', function (request, response) {
+    
+        const orderID = request.body.orderID;
+        var changestatus = request.body.changestatus;
 
-    const orderID = request.body.orderID;
-    var changestatus = request.body.changestatus;
-
-    console.log(orderID);
-
-    mysqlConnect.connect(function (err) {
-        var sql = "UPDATE orders SET status = " + changestatus + " WHERE o_id = " + orderID + "";
-
-        mysqlConnect.query(sql, function (err, result) {
-            if (err) throw err;
-            else {
-                console.log(result + " gelöscht");
-                request.flash('message', 'Status geändert.');
-                response.redirect('/dashboard');
-            }
-
+        console.log(orderID,changestatus);
+    
+        mysqlConnect.connect(function (err) {
+            var sql = "UPDATE orders SET status = '" + changestatus + "' WHERE o_id = " + orderID + "";
+            console.log(sql);
+            mysqlConnect.query(sql, function (err, result) {
+                if (err) throw err;
+                else{
+                    console.log(result + " geändert");
+                    request.flash('message', 'Status geändert.');
+                    response.redirect('/dashboard');
+                }
+                
+            });
         });
     });
-});
+
 
 
 //update article
@@ -213,15 +214,15 @@ app.post('/delete-article', function (request, response) {
         var sql = "DELETE FROM article WHERE a_id=" + articleID;
         mysqlConnect.query(sql, function (err, result) {
             if (err) {
-                request.flash('error', 'Atrikel kann nicht gelöscht werden, da dieser in einer Bestellung vorhanden ist!');
+                request.flash('message', 'Atrikel kann nicht gelöscht werden, da dieser in einer Bestellung vorhanden ist!');
                 response.redirect('/dashboard');
             }
-            else {
+            else{
                 console.log(result + " gelöscht");
                 request.flash('message', 'Artikel gelöscht.');
                 response.redirect('/dashboard');
             }
-
+            
         });
     });
 });
@@ -470,7 +471,7 @@ app.post('/addaticle', function (request, response) {
             } else {
                 if (errors.length === 0) {
 
-
+                    
                     console.log('insert into database...');
 
                     var sql = "INSERT INTO article (description, kind, startstock) VALUES (" + "'" + description + "' , '" + kind + "' , '" + startstock + "' )";
@@ -500,6 +501,7 @@ app.post('/addaticle', function (request, response) {
     });
 });
 //ADD ARTICLE TO DATABASE- END
+
 
 
 app.post('/login', function (request, response) {
