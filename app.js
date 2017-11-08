@@ -384,6 +384,70 @@ app.post('/register', function (request, response) {
     });
 });
 
+//ADD ARTICLE TO DATABASE- START
+app.post('/addaticle', function (request, response) {
+    const description = request.body.description;
+    const startstock = request.body.startstock;
+    const kind = request.body.kind;
+
+    let errors = [];
+
+    //connect to mysql
+
+    mysqlConnect.connect(function (err) {
+        console.log("Connected!");
+
+        //fist check if article exists
+        mysqlConnect.query("SELECT description FROM article WHERE description =" + "'" + description + "'", function (err, result, fields) {
+
+            // if article exists throw error
+            if (result.length > 0) {
+
+                errors.push("der Artikel existiert bereits");
+
+                response.render('dashboard', {
+                    username: request.session.username,
+                    title: 'Dashboard',
+                    message: null,
+                    page: request.url
+                });
+
+            } else {
+                if (errors.length === 0) {
+
+                    
+                    console.log('insert into database...');
+
+                    var sql = "INSERT INTO article (description, kind, startstock) VALUES (" + "'" + description + "' , '" + kind + "' , '" + startstock + "' )";
+                    mysqlConnect.query(sql, function (err, result) {
+                        if (err) throw err;
+
+                        console.log('article added to database');
+
+                        request.flash('message', 'Neuer Artikel eingepflegt');
+                        response.redirect('/dashboard');
+
+                    });
+
+                } else {
+                    response.render('dashboard', {
+                        username: request.session.username,
+                        authenticated: request.session.authenticated,
+                        userRole: request.session.userRole,
+                        'error': errors,
+                        title: 'Dashboard',
+                        message: null,
+                        page: request.url
+                    });
+                }
+            }
+        });
+    });
+});
+//ADD ARTICLE TO DATABASE- END
+
+
+
 app.post('/login', function (request, response) {
 
     const username = request.body.username;

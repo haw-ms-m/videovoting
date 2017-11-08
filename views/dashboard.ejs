@@ -63,6 +63,70 @@
 </div>
 <!-- Modal Register ENDE -->
 
+
+
+
+
+
+
+
+
+<!-- Modal add article -->
+<div class="modal fade" id="addaticle" tabindex="-1" role="dialog" aria-labelledby="registerLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h2 class="modal-title" id="registerLabel">Neuen Artikel anlegen</h2>
+            </div>
+            <div class="modal-body">
+
+                <!-- show add window -->
+
+                <form action="/addaticle" method="post">
+                    <div class="form-group">
+
+                        <label for="article">Artikel</label>
+                        <input name="description" type="text" class="form-control" id="article" aria-describedby="emailHelp"
+                               placeholder="Artikel">
+
+                        <label for="startstock">Anfangsbestand</label>
+                        <input name="startstock" type="int" class="form-control" id="startstock"
+                               placeholder="Anfangsbestand">
+
+                        
+                    </div>
+                    <div class="form-group">
+                        <label for="kind">Art:</label>
+                        <select name="kind" class="form-control" id="kind">
+                            <optgroup label="Art">
+                                <option selected="selected" disabled="disabled">Bitte auswählen</option>
+                                <option value="kiste">Kiste</option>
+                                <option value="flasche">Flasche</option>
+                                <option value="stück">Stück</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Einfügen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal add article ENDE -->
+
+
+
+
+
+
+
+
+
+
+
 <div class="container">
 
     <h1>Lagerbestand</h1>
