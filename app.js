@@ -188,18 +188,19 @@ app.post('/delete-article', function (request, response) {
 
     mysqlConnect.connect(function (err) {
         var sql = "DELETE FROM article WHERE a_id=" + articleID;
-
         mysqlConnect.query(sql, function (err, result) {
-            if (err) throw err;
-
-            console.log(result + " gelöscht");
+            if (err) {
+                request.flash('message', 'Atrikel kann nicht gelöscht werden, da dieser in einer Bestellung vorhanden ist!');
+                response.redirect('/dashboard');
+            }
+            else{
+                console.log(result + " gelöscht");
+                request.flash('message', 'Artikel gelöscht.');
+                response.redirect('/dashboard');
+            }
+            
         });
     });
-
-
-    request.flash('message', 'Artikel gelöscht.');
-    response.redirect('/dashboard');
-
 });
 
 
