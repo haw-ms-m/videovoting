@@ -6,6 +6,23 @@ a {
   color: #00B7FF;
 }
 
+body.Home {
+  background: url("../images/glasses.svg") no-repeat #272b30;
+  background-size: contain;
+}
+
+input {
+  background-color: #e5e5e5!important;
+}
+
+.login-field {
+  height: 100vh;
+}
+.login-field .box {
+  margin-top: 50%;
+  transform: translate(0%,-50%);
+}
+
 .notification {
   position: absolute;
   z-index:10;
