@@ -90,28 +90,41 @@ app.get('/dashboard', function (request, response) {
             });
         });
 
-
+    // show dashboard for the Bar!!!
     } else if (request.session.authenticated && request.session.userRole === 'bar') {
-
+        var currentUserId = request.session.userId;
+        
         mysqlConnect.connect(function (err) {
-            console.log("Connected!");
-
+            console.log("Connected!");            
+            
             mysqlConnect.query("SELECT * FROM article ORDER BY description ASC ", function (err, result, fields) {
-
-                var articleList = result;
-
-                response.render('dashboard', {
-                    articles: articleList,
-                    username: request.session.username,
-                    authenticated: request.session.authenticated,
-                    userRole: request.session.userRole,
-                    title: 'Dashboard',
-                    message: request.flash('message'),
-                    error: request.flash('error'),
-                    page: request.url
-                });
+                stockSelectQuery = "SELECT orders.o_id, users.name, orders.datetime, orders.status FROM orders, users WHERE orders.id = users.id AND orders.id = " +currentUserId+ " AND orders.status != 'Storniert' ORDER BY orders.status DESC";
+                console.log(stockSelectQuery);
+                
+                mysqlConnect.query(stockSelectQuery, function (err, stockResult, fields) {                
+                    positionsSelectQuery = "SELECT article.description, positions.amount, positions.o_id, article.kind FROM article, orders, positions WHERE positions.a_id = article.a_id AND positions.o_id = orders.o_id";
+                    
+                    mysqlConnect.query(positionsSelectQuery, function (err, positionsOrdersResult, fields) {
+                        console.log('positionsOrdersResult', positionsOrdersResult);
+                        var articleList = result;
+                        response.render('dashboard', {
+                            articles: articleList,
+                            positions: positionsOrdersResult,
+                            stock: stockResult,
+                            username: request.session.username,
+                            authenticated: request.session.authenticated,
+                            userRole: request.session.userRole,
+                            title: 'Dashboard',
+                            message: request.flash('message'),
+                            error: request.flash('error'),
+                            page: request.url
+                        });
+                    });                    
+                });                
             });
         });
+
+    // show dashboard for the Lager!!!
     } else if (request.session.authenticated && request.session.userRole === 'lager') {
 
         mysqlConnect.connect(function (err) {
@@ -154,7 +167,7 @@ app.get('/dashboard', function (request, response) {
 
 });
 
-
+//Update Order Status
 app.post('/update-order', function (request, response) {
 
     const orderID = request.body.orderID;
@@ -182,6 +195,29 @@ app.post('/update-order', function (request, response) {
         });
     }
 });
+
+//Storn Order
+app.post('/storn_order', function (request, response) {
+    
+        const orderID = request.body.orderID;
+        var changestatus = request.body.changestatus;
+    
+        console.log('changestatus',changestatus);
+
+        mysqlConnect.connect(function (err) {
+            var sql = "UPDATE orders SET status = 'Storniert'" + " WHERE o_id = " + orderID + "";
+            console.log(sql);
+    
+            mysqlConnect.query(sql, function (err, result) {
+                if (err) throw err;
+                else {
+                    console.log(result + " geändert");
+                    request.flash('message', 'Order storniert!');
+                    response.redirect('/dashboard');
+                    }
+                });
+            });
+    });
 
 
 
