@@ -83,6 +83,11 @@ h2 {
   font-size: 20px;
 }
 
+@media(min-width: 768px) and (max-width: 1200px){
+  .article {
+    height: 320px;
+  }
+}
 /* für Tablet und größere Formate - 5 Spalten erzwingen */
 @media (min-width: 1024px){
   .article__box {

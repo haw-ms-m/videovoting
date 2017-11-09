@@ -10,6 +10,9 @@
     $(document).ready(function() {
         var note = $('.notification');
         note.animate({right: '50px'}, 1000).delay(2000).animate({right: '-250px'}, 1000).fadeOut(500);
+
+        var error = $('.error-container');
+        error.delay(5000).fadeOut(500);
     });
 
     // Script für die Bestelloberfläche der Bar, -> die Selectfelder
