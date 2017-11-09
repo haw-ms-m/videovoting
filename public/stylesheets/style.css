@@ -1,5 +1,9 @@
 body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px "Helvetica", Arial, sans-serif;
+
+}
+h1,h2,h3,h4,p,a,label {
+  font-weight: 200;
 }
 
 a {
@@ -24,6 +28,13 @@ input {
   -ms-transform: translate(-50%,-50%);
   transform: translate(-50%,-50%);
 }
+.login-field h1 {
+  margin-bottom: 30px;
+}
+.login-field h2 {
+  margin-top: 0px;
+}
+
 .background:after {
   content: '';
   position: absolute;
@@ -34,6 +45,11 @@ input {
   background: url("../images/glasses.svg") no-repeat #272b30;
   background-size: contain;
 
+}
+
+.navbar-link:hover {
+  background: transparent!important;
+  color: inherit!important;
 }
 
 .error-container {

@@ -20,7 +20,7 @@
             <ul class="nav navbar-nav">
 
                 <% if (userRole === 'admin' && authenticated === true) { %>
-                <li class="active">
+                <li>
                     <a data-toggle="modal" data-target="#addaticle">Neuen Artikel anlegen</a>
                 </li>
                 <li>
@@ -38,8 +38,8 @@
             </form>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a>eingeloggt als: <%= userRole %></a></li>
-                <li><a href="/logout">abmelden</a></li>
+                <li><a class="navbar-link">eingeloggt als: <i class="fa fa-user"></i>  <%= userRole %></a></li>
+                <li><a href="/logout"> <i class="fa fa-sign-out"></i> abmelden</a></li>
             </ul>
 
         </div><!-- /.navbar-collapse -->
