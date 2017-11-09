@@ -57,6 +57,7 @@ input {
   z-index: 10;
 }
 
+
 @media (min-width:600px){
   .login-field {
     width: 50%;
@@ -75,7 +76,7 @@ input {
 }
 
 .article__box {
-  min-height: 200px;
+  height: 160px;
   padding: 10px;
 }
 h2 {

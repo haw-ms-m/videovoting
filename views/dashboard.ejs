@@ -166,8 +166,11 @@
 
                         </div>
                     </div>
-                    <div class="col-xs-1"><button class="btn btn-default" data-toggle="collapse" href="#collapse<%= [i] %>">
-                            <i class="fa fa-edit"></i> ändern</button></div>
+                    <div class="col-xs-1">
+                        <button class="btn btn-default" data-toggle="collapse" href="#collapse<%= [i] %>">
+                            <i class="fa fa-edit"></i> ändern
+                        </button>
+                    </div>
                 </div>
             </div>
             <!--panel zum ändern der tabelleneinträge-->
@@ -217,7 +220,8 @@
                                             class="btn btn-primary btn-block"><i class="fa fa-exchange"></i> ändern
                                     </button>
                                     <button formaction="/delete-article" onClick="return confirm('wirklich löschen?')"
-                                            type="submit" class="btn btn-danger btn-block"><i class="fa fa-times-rectangle"></i> löschen
+                                            type="submit" class="btn btn-danger btn-block"><i
+                                                class="fa fa-times-rectangle"></i> löschen
                                     </button>
                                 </div>
                             </div>
@@ -248,14 +252,14 @@
             <!--Vierspaltiges Layout-->
             <div class="col-xs-6 col-sm-3 col-md-3">
                 <!--Grauer Kasten-->
-                <div class="well article__box">
-
+                <div class="well">
+                    <div class="article__box" style="background: url('<%= articles[i].link %>') no-repeat center;">
+                    </div>
                     <!--Hidden Field-->
                     <input type="hidden" name="articleID" value="<%= articles[i].a_id %>">
                     <input type="hidden" name="articleDescription" value="<%= articles[i].description %>">
 
-                    <h2 class="title"><%= articles[i].description %></h2>
-
+                    <h2><%= articles[i].description %></h2>
                     <div class="input-group number-spinner">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default btn-number" disabled="disabled"
@@ -274,13 +278,14 @@
                                 </button>
                         </span>
                     </div>
+
                 </div>
             </div>
 
             <% } %>
         </div>
 
-        <button type="submit" class="btn btn-primary">Bestellung abschicken</button>
+        <button type="submit" class="btn btn-success">Bestellung abschicken</button>
 
     </form>
     <!--END of</form> -->
@@ -321,15 +326,21 @@
                         <div class="col-xs-1"><p><i class="fa fa-glass"></i> <%= stock[i].name %></p></div>
                         <div class="col-xs-2"><p><i class="fa fa-clock-o"></i> <%= stock[i].datetime %></p></div>
                         <% if (stock[i].status === 'Fertig') { %>
-                        <div class="col-xs-2"><p class="label label-success"><i class="fa fa-check-square-o"></i> <%= stock[i].status %></p></div>
+                        <div class="col-xs-2"><p class="label label-success"><i
+                                        class="fa fa-check-square-o"></i> <%= stock[i].status %></p></div>
                         <% } else if (stock[i].status === 'Nicht bearbeitet'){ %>
-                        <div class="col-xs-2"><p class="label label-danger"><i class="fa fa-times-rectangle"></i> <%= stock[i].status %></p></div>
-                        <% } else if (stock[i].status === 'Wird bearbeitet') {%>
-                        <div class="col-xs-2"><p class="label label-warning"><i class="fa fa-refresh"></i> <%= stock[i].status %></p></div>
-                        <%}%>
+                        <div class="col-xs-2"><p class="label label-danger"><i
+                                        class="fa fa-times-rectangle"></i> <%= stock[i].status %></p></div>
+                        <% } else if (stock[i].status === 'Wird bearbeitet') { %>
+                        <div class="col-xs-2"><p class="label label-warning"><i
+                                        class="fa fa-refresh"></i> <%= stock[i].status %></p></div>
+                        <% } %>
 
-                        <div class="col-xs-2"><button class="btn btn-default" data-toggle="collapse" href="#collapse<%= [i] %>"><i
-                                        class="fa fa-eye"></i> Anzeigen</button></div>
+                        <div class="col-xs-2">
+                            <button class="btn btn-default" data-toggle="collapse" href="#collapse<%= [i] %>"><i
+                                        class="fa fa-eye"></i> Anzeigen
+                            </button>
+                        </div>
                         <div class="col-xs-2">
                             <div class="form-group">
                                 <select name="changestatus" class="form-control" id="changestatus">
