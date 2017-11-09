@@ -530,7 +530,6 @@ app.post('/login', function (request, response) {
             // find registered user in database
             mysqlConnect.query("SELECT * FROM users WHERE name =" + "'" + username + "'", function (err, result, fields) {
 
-                console.log(result[0]);
 
                 if (result.length < 0 || result[0] === undefined) {
                     // user does not exist
