@@ -297,6 +297,42 @@
                                             <% } %>
    
                                         </div>
+
+                                        <div id="collapse<%= [i] %>" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <!--formular um dieses getränk zu ändern-->
+                        <form action="" method="post">
+                            <div class="form-group">
+                                <div class="row">
+
+                                    <!--Verstecktes Feld!! Wichtig für die ID-->
+                                    <input type="hidden" name="articleID" value="<%= stock[i].o_id %>">
+
+                                    <% for(var k = 0; k < positions.length; k++) { %>
+                                    <% if (positions[k].o_id === stock[i].o_id) { %>
+                                    <div class="row">
+                                        <div class="col-xs-1"></div>
+                                        <div class="col-xs-2">
+                                            Artikel:
+                                            <%= positions[k].description %>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            Anzahl:
+                                            <%= positions[k].amount %>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            Lagerung:
+                                            <%= positions[k].kind %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                    <% } %>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                                     </div>                                    
                                 </div>
                             </div>                    
