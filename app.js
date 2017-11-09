@@ -160,7 +160,10 @@ app.post('/update-order', function (request, response) {
     const orderID = request.body.orderID;
     var changestatus = request.body.changestatus;
 
+    console.log('changestatus',changestatus);
+
     if(changestatus == undefined) {
+        request.flash('error', 'Bitte den Status auswählen um ihn zu ändern');
         response.redirect('/dashboard');
     }
     else{
