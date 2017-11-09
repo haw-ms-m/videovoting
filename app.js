@@ -131,7 +131,7 @@ app.get('/dashboard', function (request, response) {
             console.log("Mit Lager verbunden!");
 
             //Ausgabe der orders Liste für das Lager
-            stockSelectQuery = "SELECT orders.o_id, users.name, orders.datetime, orders.status FROM orders, users WHERE orders.id = users.id ORDER BY orders.status DESC";
+            stockSelectQuery = "SELECT orders.o_id, users.name, orders.datetime, orders.status FROM orders, users WHERE orders.id = users.id AND orders.status != 'Storniert' ORDER BY orders.status DESC";
             mysqlConnect.query(stockSelectQuery, function (err, stockResult, fields) {
 
 
