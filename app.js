@@ -6,6 +6,9 @@ var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 var app = express();
 
+app.use('/static', express.static('./static'));
+
+
 app.set('views', path.join(__dirname, 'views'));
 
 // view engine setup

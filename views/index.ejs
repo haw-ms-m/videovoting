@@ -8,38 +8,35 @@
 <% include partials/errors.ejs %>
 
 
+<div class="login-field">
+    <!-- show login -->
+    <div class="box">
+        <div class="well">
+            <h2>Login</h2>
+            <form action="/login" method="post">
+                <div class="form-group">
 
-<div class="container login-field">
-    <div class="row box">
-        <!-- show login -->
-            <div class="col-md-4 col-md-push-4">
-                <div class="well">
-                    <h2>Login</h2>
-                    <form action="/login" method="post">
-                        <div class="form-group">
+                    <label for="login-user">Name</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i> </span>
+                        <input name="username" type="text" class="form-control" id="login-user"
+                               aria-describedby="emailHelp"
+                               placeholder="Username">
+                    </div>
 
-                            <label for="login-user">Name</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user"></i> </span>
-                                <input name="username" type="text" class="form-control" id="login-user"
-                                       aria-describedby="emailHelp"
-                                       placeholder="Username">
-                            </div>
-
-                            <label for="login-pw">Passwort </label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-lock"></i> </span>
-                                <input name="password" type="password" class="form-control" id="login-pw"
-                                       placeholder="Passwort">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
+                    <label for="login-pw">Passwort </label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-lock"></i> </span>
+                        <input name="password" type="password" class="form-control" id="login-pw"
+                               placeholder="Passwort">
+                    </div>
                 </div>
-            </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
         </div>
     </div>
+</div>
 
 
 <% include partials/scripts.ejs %>
