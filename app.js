@@ -376,64 +376,39 @@ app.post('/register', function (request, response) {
     const password = request.body.password;
     const repPassword = request.body.repPassword;
     const role = request.body.role;
-
     let errors = [];
-    if (username === "" || username === undefined) {
-        errors.push('Bitte einen Username eingeben.');
+
+    if(role == undefined) {
+        request.flash('error', 'Bitte wählen Sie eine Rolle aus!');
+        response.redirect('/dashboard');
     }
-    if (password === "" || password === undefined) {
-        errors.push('Bitte ein Passwort eingeben.');
-    }
-    if (repPassword === "" || repPassword === undefined) {
-        errors.push('Bitte ein Passwort zur Bestätigung eingeben.');
-    }
-    if (password !== repPassword) {
-        errors.push('Die Passwörter stimmen nicht überein.');
-    }
-
-    //connect to mysql
-
-    mysqlConnect.connect(function (err) {
-        console.log("Connected!");
-
-        //fist check if user exists
-        mysqlConnect.query("SELECT name FROM users WHERE name =" + "'" + username + "'", function (err, result, fields) {
-
-            // if user exists throw error
-            if (result.length > 0) {
-
-                errors.push("der Benutzer existiert bereits");
-
-                response.render('dashboard', {
-                    username: request.session.username,
-                    authenticated: request.session.authenticated,
-                    userRole: request.session.userRole,
-                    'error': errors,
-                    title: 'Dashboard',
-                    message: null,
-                    page: request.url
-                });
-
-            } else {
-                if (errors.length === 0) {
-
-                    console.log('encrypting password...');
-                    const encryptedPassword = passwordHash.generate(password);
-
-                    console.log('insert into database...');
-
-                    var sql = "INSERT INTO users (name, password, role) VALUES (" + "'" + username + "' , '" + encryptedPassword + "' , '" + role + "' )";
-                    mysqlConnect.query(sql, function (err, result) {
-                        if (err) throw err;
-
-                        console.log('user added to database');
-
-                        request.flash('message', 'Neuer Benutzer registriert');
-                        response.redirect('/dashboard');
-
-                    });
-
-                } else {
+    else{
+        if (username === "" || username === undefined) {
+            errors.push('Bitte einen Username eingeben.');
+        }
+        if (password === "" || password === undefined) {
+            errors.push('Bitte ein Passwort eingeben.');
+        }
+        if (repPassword === "" || repPassword === undefined) {
+            errors.push('Bitte ein Passwort zur Bestätigung eingeben.');
+        }
+        if (password !== repPassword) {
+            errors.push('Die Passwörter stimmen nicht überein.');
+        }
+    
+        //connect to mysql
+    
+        mysqlConnect.connect(function (err) {
+            console.log("Connected!");
+    
+            //fist check if user exists
+            mysqlConnect.query("SELECT name FROM users WHERE name =" + "'" + username + "'", function (err, result, fields) {
+    
+                // if user exists throw error
+                if (result.length > 0) {
+    
+                    errors.push("der Benutzer existiert bereits");
+    
                     response.render('dashboard', {
                         username: request.session.username,
                         authenticated: request.session.authenticated,
@@ -443,10 +418,41 @@ app.post('/register', function (request, response) {
                         message: null,
                         page: request.url
                     });
+    
+                } else {
+                    if (errors.length === 0) {
+    
+                        console.log('encrypting password...');
+                        const encryptedPassword = passwordHash.generate(password);
+    
+                        console.log('insert into database...');
+    
+                        var sql = "INSERT INTO users (name, password, role) VALUES (" + "'" + username + "' , '" + encryptedPassword + "' , '" + role + "' )";
+                        mysqlConnect.query(sql, function (err, result) {
+                            if (err) throw err;
+    
+                            console.log('user added to database');
+    
+                            request.flash('message', 'Neuer Benutzer registriert');
+                            response.redirect('/dashboard');
+    
+                        });
+    
+                    } else {
+                        response.render('dashboard', {
+                            username: request.session.username,
+                            authenticated: request.session.authenticated,
+                            userRole: request.session.userRole,
+                            'error': errors,
+                            title: 'Dashboard',
+                            message: null,
+                            page: request.url
+                        });
+                    }
                 }
-            }
-        });
-    });
+            });
+        });        
+    } 
 });
 
 //ADD ARTICLE TO DATABASE- START
@@ -457,57 +463,62 @@ app.post('/addaticle', function (request, response) {
 
     let errors = [];
 
-    //connect to mysql
-
-    mysqlConnect.connect(function (err) {
+    if(kind == undefined) {
+        request.flash('error', 'Bitte wählen Sie eine Art aus!');
+        response.redirect('/dashboard');
+    }
+    else{
+        //connect to mysql
+        mysqlConnect.connect(function (err) {
         console.log("Connected!");
 
-        //fist check if article exists
-        mysqlConnect.query("SELECT description FROM article WHERE description =" + "'" + description + "'", function (err, result, fields) {
+            //fist check if article exists
+            mysqlConnect.query("SELECT description FROM article WHERE description =" + "'" + description + "'", function (err, result, fields) {
 
-            // if article exists throw error
-            if (result.length > 0) {
+                // if article exists throw error
+                if (result.length > 0) {
 
-                errors.push("der Artikel existiert bereits");
+                    errors.push("der Artikel existiert bereits");
 
-                response.render('dashboard', {
-                    username: request.session.username,
-                    title: 'Dashboard',
-                    message: null,
-                    page: request.url
-                });
-
-            } else {
-                if (errors.length === 0) {
-
-                    
-                    console.log('insert into database...');
-
-                    var sql = "INSERT INTO article (description, kind, startstock) VALUES (" + "'" + description + "' , '" + kind + "' , '" + startstock + "' )";
-                    mysqlConnect.query(sql, function (err, result) {
-                        if (err) throw err;
-
-                        console.log('article added to database');
-
-                        request.flash('message', 'Neuer Artikel eingepflegt');
-                        response.redirect('/dashboard');
-
-                    });
-
-                } else {
                     response.render('dashboard', {
                         username: request.session.username,
-                        authenticated: request.session.authenticated,
-                        userRole: request.session.userRole,
-                        'error': errors,
                         title: 'Dashboard',
                         message: null,
                         page: request.url
                     });
+                } 
+                else {
+                    if (errors.length === 0) {
+
+                        console.log('insert into database...');
+
+                        var sql = "INSERT INTO article (description, kind, startstock) VALUES (" + "'" + description + "' , '" + kind + "' , '" + startstock + "' )";
+                        
+                        mysqlConnect.query(sql, function (err, result) {
+                            if (err) throw err;
+
+                            console.log('article added to database');
+
+                            request.flash('message', 'Neuer Artikel eingepflegt');
+                            response.redirect('/dashboard');
+
+                        });
+                    } 
+                    else {
+                        response.render('dashboard', {
+                            username: request.session.username,
+                            authenticated: request.session.authenticated,
+                            userRole: request.session.userRole,
+                            'error': errors,
+                            title: 'Dashboard',
+                            message: null,
+                            page: request.url
+                        });
+                    }
                 }
-            }
-        });
-    });
+            });
+        });                
+    }    
 });
 //ADD ARTICLE TO DATABASE- END
 
