@@ -308,17 +308,19 @@
                                 </div>
                                 <div id="collapse<%= [i] %>" class="panel-collapse collapse">
                                     <div class="panel-body">
-                                        <!--formular um dieses getränk zu ändern-->
+                                        <!--formular um den Inhalt einer Bestellung anzuzeigen-->
                                         <form action="" method="post">
                                             <div class="form-group">
                                                 <div class="row">
 
                                                     <!--Verstecktes Feld!! Wichtig für die ID-->
-                                                    <input type="hidden" name="articleID" value="<%= stock[i].o_id %>">
+                                                    
 
                                                     <% for(var k = 0; k < positions.length; k++) { %>
                                                     <% if (positions[k].o_id === stock[i].o_id) { %>
-                                                    <div class="row">
+                                                        <input type="hidden" name="articleIDcancel" value="<%= positions[k].a_id %>">
+                                                        <input type="hidden" name="articleAMOUNTcancel" value="<%= positions[k].amount %>">
+                                                        <div class="row">
                                                         <div class="col-xs-1"></div>
                                                         <div class="col-xs-2">
                                                             Artikel:

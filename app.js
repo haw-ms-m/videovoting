@@ -102,7 +102,7 @@ app.get('/dashboard', function (request, response) {
                 // console.log(stockSelectQuery);
                 
                 mysqlConnect.query(stockSelectQuery, function (err, stockResult, fields) {                
-                    positionsSelectQuery = "SELECT article.description, positions.amount, positions.o_id, article.kind FROM article, orders, positions WHERE positions.a_id = article.a_id AND positions.o_id = orders.o_id";
+                    positionsSelectQuery = "SELECT positions.a_id, article.description, positions.amount, positions.o_id, article.kind FROM article, orders, positions WHERE positions.a_id = article.a_id AND positions.o_id = orders.o_id";
                     
                     mysqlConnect.query(positionsSelectQuery, function (err, positionsOrdersResult, fields) {
                         // console.log('positionsOrdersResult', positionsOrdersResult);
@@ -196,28 +196,110 @@ app.post('/update-order', function (request, response) {
     }
 });
 
-//Storn Order
+//Cancel Order
 app.post('/storn_order', function (request, response) {
     
-        const orderID = request.body.orderID;
-        var changestatus = request.body.changestatus;
+    console.log(request.body.articleIDcancel);
+    console.log(request.body.articleAMOUNTcancel);
     
-        console.log('changestatus',changestatus);
 
-        mysqlConnect.connect(function (err) {
-            var sql = "UPDATE orders SET status = 'Storniert'" + " WHERE o_id = " + orderID + "";
-            console.log(sql);
+    const orderID = request.body.orderID;
+    var changestatus = request.body.changestatus; 
     
-            mysqlConnect.query(sql, function (err, result) {
+    
+    var articleIDcancel = [request.body.articleIDcancel];
+    //var articleIDcancel = Array.prototype.slice.call(request.body.articleIDcancel);
+    var articleAMOUNTcancel = [request.body.articleAMOUNTcancel];
+    //var articleAMOUNTcancel = request.body.articleAMOUNTcancel;
+    
+    console.log(articleIDcancel, articleAMOUNTcancel);
+
+    mysqlConnect.connect(function (err) {
+        var sql = "UPDATE orders SET status = 'Storniert'" + " WHERE o_id = " + orderID + "";
+        console.log(sql);
+    
+        /*
+        mysqlConnect.query(sql, function (err, result) {
+            if (err) throw err;
+            else {
+                console.log(result + " geändert");
+                request.flash('message', 'Order storniert!');
+                response.redirect('/dashboard');
+            }
+        });
+        */
+    // Zählschleife um für jeden Artikel die consumed Zahl zu aktualisieren.
+    for (var k = 0; k < articleIDcancel.length; k++) {
+        
+        console.log('Article Nr. =' + articleIDcancel[k]);
+        console.log('Amount to cancel=' + articleAMOUNTcancel[k]);
+        
+        
+        // Aktuellen consumed Wert zur errechnung des neuen Wertes auslesen.
+        var articleconsumedSQLselect = "SELECT consumed FROM article WHERE a_id = " + articleIDcancel[k] + "";
+        
+  
+        //Variablen zu Berechnung des neuen Consumed-Wert
+        var artnr = articleIDcancel[k];
+        var orderconsumed = parseInt(articleAMOUNTcancel[k]);
+        
+        
+        mysqlConnect.query(articleconsumedSQLselect, function (err, resultcon, fields) {
+            if (err) throw err;
+            console.log(resultcon[0].consumed,orderconsumed);
+        
+            //Neuen Wert für Consumed errechnen und in Variable speichern.
+            var newconsumed = resultcon[0].consumed - orderconsumed;
+            console.log("Neuer konsumed Wert:", newconsumed);
+        
+        
+            //Neuen Comsumed-Wert in die Datenbank schreiben.
+            var articleconsumedSQLinsert = "UPDATE article SET consumed = " + newconsumed + " WHERE a_id = " + artnr + "";
+            console.log(articleconsumedSQLinsert);
+            
+            mysqlConnect.query(articleconsumedSQLinsert, function (err, result_id_a_insert, fields) {
                 if (err) throw err;
-                else {
-                    console.log(result + " geändert");
-                    request.flash('message', 'Order storniert!');
-                    response.redirect('/dashboard');
-                    }
-                });
+                    console.log("Consumed erfolgreich aktualisiert:", newconsumed);
             });
+        
+        });
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     });
+
+    request.flash('message', 'Order storniert!');
+    response.redirect('/dashboard');
+});
 
 
 
