@@ -464,7 +464,7 @@ app.post('/bar-order', function (request, response) {
     }
 });
 
-
+//User registration
 app.post('/register', function (request, response) {
     const username = request.body.username;
     const password = request.body.password;
