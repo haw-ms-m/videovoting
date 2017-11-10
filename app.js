@@ -205,14 +205,21 @@ app.post('/storn_order', function (request, response) {
 
     const orderID = request.body.orderID;
     var changestatus = request.body.changestatus; 
-    
-    
-    var articleIDcancel = [request.body.articleIDcancel];
-    //var articleIDcancel = Array.prototype.slice.call(request.body.articleIDcancel);
-    var articleAMOUNTcancel = [request.body.articleAMOUNTcancel];
-    //var articleAMOUNTcancel = request.body.articleAMOUNTcancel;
-    
-    console.log(articleIDcancel, articleAMOUNTcancel);
+    var articleIDcancel1 = request.body.articleIDcancel
+
+
+    if (Array.isArray(articleIDcancel1)== true) {
+        var articleIDcancel = request.body.articleIDcancel;
+        var articleAMOUNTcancel = request.body.articleAMOUNTcancel;
+        console.log('IF = TRUE');
+    }
+    else {
+        var articleIDcancel = [request.body.articleIDcancel];
+        var articleAMOUNTcancel = [request.body.articleAMOUNTcancel];
+        console.log('ELSE = TRUE');
+    }
+
+    console.log(articleIDcancel, articleAMOUNTcancel, "ID Array Länge:", articleIDcancel.length);
 
     mysqlConnect.connect(function (err) {
         var sql = "UPDATE orders SET status = 'Storniert'" + " WHERE o_id = " + orderID + "";
@@ -224,80 +231,53 @@ app.post('/storn_order', function (request, response) {
             else {
                 console.log(result + " geändert");
                 request.flash('message', 'Order storniert!');
-                response.redirect('/dashboard');
+                //response.redirect('/dashboard');
             }
         });
         */
-    // Zählschleife um für jeden Artikel die consumed Zahl zu aktualisieren.
-    for (var k = 0; k < articleIDcancel.length; k++) {
+        // Zählschleife um für jeden Artikel die consumed Zahl zu aktualisieren.
+        for (var x = 0; x < articleIDcancel.length; x++) {
         
-        console.log('Article Nr. =' + articleIDcancel[k]);
-        console.log('Amount to cancel=' + articleAMOUNTcancel[k]);
+            console.log('Article Nr. =' + articleIDcancel[x]);
+            console.log('Amount to cancel=' + articleAMOUNTcancel[x]);
         
         
-        // Aktuellen consumed Wert zur errechnung des neuen Wertes auslesen.
-        var articleconsumedSQLselect = "SELECT consumed FROM article WHERE a_id = " + articleIDcancel[k] + "";
-        
+            //Aktuellen consumed Wert zur errechnung des neuen Wertes auslesen.
+            //var articleconsumedSQLselect = "SELECT consumed FROM article WHERE a_id = " + articleIDcancel[x] + "";
+            console.log('TRAAAACKER');
   
-        //Variablen zu Berechnung des neuen Consumed-Wert
-        var artnr = articleIDcancel[k];
-        var orderconsumed = parseInt(articleAMOUNTcancel[k]);
+            //Variablen zu Berechnung des neuen Consumed-Wert
+            var artnr = parseInt(articleIDcancel[x]);
+            var orderconsumed = parseInt(articleAMOUNTcancel[x]);
         
-        
-        mysqlConnect.query(articleconsumedSQLselect, function (err, resultcon, fields) {
-            if (err) throw err;
-            console.log(resultcon[0].consumed,orderconsumed);
-        
-            //Neuen Wert für Consumed errechnen und in Variable speichern.
-            var newconsumed = resultcon[0].consumed - orderconsumed;
-            console.log("Neuer konsumed Wert:", newconsumed);
-        
-        
-            //Neuen Comsumed-Wert in die Datenbank schreiben.
-            var articleconsumedSQLinsert = "UPDATE article SET consumed = " + newconsumed + " WHERE a_id = " + artnr + "";
-            console.log(articleconsumedSQLinsert);
-            
-            mysqlConnect.query(articleconsumedSQLinsert, function (err, result_id_a_insert, fields) {
+            console.log('Variablen zur Berechnung Article Nr. =', artnr);
+            console.log('Variablen zur Berechnung Amount to cancel=', orderconsumed);
+
+
+            mysqlConnect.query("SELECT consumed FROM article WHERE a_id = " + articleIDcancel[x] + "", function (err, resultcon, fields) {
                 if (err) throw err;
+                   
+                //Neuen Wert für Consumed errechnen und in Variable speichern.
+                var newconsumed = resultcon[0].consumed - orderconsumed;
+                console.log("Neuer konsumed Wert:", newconsumed);
+        
+        
+                //Neuen Comsumed-Wert in die Datenbank schreiben.
+                var articleconsumedSQLinsert = "UPDATE article SET consumed = " + newconsumed + " WHERE a_id = " + artnr + "";
+                console.log(articleconsumedSQLinsert);
+            
+                mysqlConnect.query(articleconsumedSQLinsert, function (err, result_id_a_insert, fields) {
+                    if (err) throw err;
                     console.log("Consumed erfolgreich aktualisiert:", newconsumed);
+                });
+        
             });
         
-        });
-        
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
 
     });
 
-    request.flash('message', 'Order storniert!');
+    request.flash('message', 'Consumed aktualisiert');
     response.redirect('/dashboard');
 });
 
@@ -333,6 +313,8 @@ app.post('/update-article', function (request, response) {
 
 });
 
+
+//Delete article
 app.post('/delete-article', function (request, response) {
 
     const articleID = request.body.articleID;
@@ -354,7 +336,7 @@ app.post('/delete-article', function (request, response) {
     });
 });
 
-
+//Create order
 app.post('/bar-order', function (request, response) {
 
 
@@ -364,7 +346,7 @@ app.post('/bar-order', function (request, response) {
 
     Array.prototype.zip = function (arr) {
         return this.map(function (e, i) {
-            //return [e, arr[i]];
+
 
             //Die Anzahl der bestellten Artikel befinden sich jetzt an der ersten Stelle im inneren Array.
             //Die Artikel ID befindet sich nun an der zweiten Stelle. Das macht das Überprüfen mit der Schleife einfacher.
