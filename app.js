@@ -376,52 +376,51 @@ app.post('/bar-order', function (request, response) {
                     console.log('order added to database o_id =',newCountOrders);
                 });
                       
-                
-                
-                
-                for (var k = 0; k < newArray.length; k++) { 
-                    //Consumed Wert zur errechnung des neuen Wertes auslesen.
-                    var articleconsumedSQLselect = "SELECT consumed FROM article WHERE a_id = " + newArray[k][1] + "";
-                    
-                    console.log('K=', k); 
-                    mysqlConnect.query(articleconsumedSQLselect, function (err, result_id_a, fields) {
-                        if (err) throw err;    
-                    
-                    // Zählschleife um jede Bestellung nacheinander in die Datenbank einzutragen
-                        i ++ ;    
+                // Zählschleife um jede Bestellung nacheinander in die Datenbank einzutragen
+                for (var h = 0; h < newArray.length; h++) {   
+                    console.log('Amount=' + newArray[h][0]);
+                    console.log('Article Nr. =' + newArray[h][1]);
 
-                        
-                        console.log('Amount=' + newArray[i][0]);
-                        console.log('Article Nr. =' + newArray[i][1]);
+                    var newOrderID = newCountOrders;
+                    console.log('newOrderID ' + newOrderID);
+                    //o_id muss aus der Variablen ausgelesen werden. -> hab ich übernommen,  amount ist die Anzahl der Artikel die bestellt wird. hier ist das newArray[k][0]
+                    var positionSQL = "INSERT INTO positions (o_id,a_id,amount) VALUES (" + newOrderID + ',' + newArray[h][1] + ',' + newArray[h][0] + ")";
+                    console.log(positionSQL);
 
-                        var newOrderID = newCountOrders;
-                        console.log('newOrderID ' + newOrderID);
-                        //o_id muss aus der Variablen ausgelesen werden. -> hab ich übernommen,  amount ist die Anzahl der Artikel die bestellt wird. hier ist das newArray[k][0]
-                        var positionSQL = "INSERT INTO positions (o_id,a_id,amount) VALUES (" + newOrderID + ',' + newArray[i][1] + ',' + newArray[i][0] + ")";
+                    mysqlConnect.query(positionSQL, function (err, result_id, fields) {
 
-                        mysqlConnect.query(positionSQL, function (err, result_id, fields) {
-                            if (err) throw err;
-                        });
-
-                        //Variablen zu Berechnung des neuen Consumed-Wert
-                        var orderconsumed = parseInt(newArray[k][0]);
-                        var artnr = newArray[k][1];
-
-                        //Neuen Wert für Consumed errechnen und in Variable speichern.
-                        var newconsumed = result_id_a[0].consumed + orderconsumed;
-                        console.log('Consumed aktuell ',result_id_a[0].consumed, ' + Consumed order = ',orderconsumed, 'new consumed ',newconsumed);
-
-                        //Neuen Comsumed-Wert in die Datenbank schreiben.
-                        var articleconsumedSQLinsert = "UPDATE article SET consumed = " + newconsumed + " WHERE a_id = " + artnr + "";
-                        console.log(articleconsumedSQLinsert);
-                        mysqlConnect.query(articleconsumedSQLinsert, function (err, result_id_a_insert, fields) {
-                            if (err) throw err;
-                            console.log("Consumed erfolgreich aktualisiert:", newconsumed);
-                        });
-                                    
+                        if (err) throw err;
                     });
                 }
-            });
+            });    
+                
+            // Zählschleife um für jeden bestellten Artikel die consumed Zahl zu updaten.
+            for (var k = 0; k < newArray.length; k++) { 
+                
+                //Consumed Wert zur errechnung des neuen Wertes auslesen.
+                var articleconsumedSQLselect = "SELECT consumed FROM article WHERE a_id = " + newArray[k][1] + "";
+                    
+                mysqlConnect.query(articleconsumedSQLselect, function (err, result_id_a, fields) {
+                    if (err) throw err;                     
+                    
+                    //Variablen zu Berechnung des neuen Consumed-Wert
+                    var orderconsumed = parseInt(newArray[i][0]);
+                    var artnr = newArray[i][1];
+                    i ++ ;
+
+                    //Neuen Wert für Consumed errechnen und in Variable speichern.
+                    var newconsumed = result_id_a[0].consumed + orderconsumed;
+                    console.log('Consumed aktuell ',result_id_a[0].consumed, ' + Consumed order = ',orderconsumed, 'new consumed ',newconsumed);
+
+                    //Neuen Comsumed-Wert in die Datenbank schreiben.
+                    var articleconsumedSQLinsert = "UPDATE article SET consumed = " + newconsumed + " WHERE a_id = " + artnr + "";
+                    console.log(articleconsumedSQLinsert);
+                    mysqlConnect.query(articleconsumedSQLinsert, function (err, result_id_a_insert, fields) {
+                        if (err) throw err;
+                        console.log("Consumed erfolgreich aktualisiert:", newconsumed);
+                    });                                    
+                });
+            }            
         });
         request.flash('message', 'Neue Bestellung ist eingegangen');
         response.redirect('/dashboard');
