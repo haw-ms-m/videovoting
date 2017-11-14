@@ -77,51 +77,48 @@
     });
 
 
-
     (function ($) {
 
-    function listFilter(){
+        function listFilter() {
 
-        var searchInput = $('#search');
+            var searchInput = $('#search');
+            var resetButton = $('#resetbtn');
+            var list = $('.article-list');
 
-        var dataItem = $('.admin-data-item');
-        var dataKeyword = $(dataItem).attr('data-keyword');
 
-        var list = $('.article-list');
+            jQuery.expr[':'].Contains = function (a, i, m) {
+                return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+            };
 
-        helper = $('.filter-helper').val();
+            $(searchInput).change(function () {
+                // get the value of the input field so we can filter the results
+                var filter = $(this).val();
+                if (filter) {
+                    //$(list).find('div[data-keyword=' + $(this).val() + ']').show();
+                    $(list).find(".filter-helper:not(:Contains(" + filter + "))").parent().slideUp();
+                    console.log($(this).val());
 
-        jQuery.expr[':'].Contains = function(a,i,m){
-            return (searchInput.val() || span.html() || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
-        };
+                    //$(list).find('div:not([data-keyword=' + $(this).val() + '])').hide();
+                    $(list).find(".filter-helper:Contains(" + filter + ")").parent().slideDown();
+                } else {
+                    $(list).find('.article-list__item').slideDown();
+                }
+                return false;
 
-        $(searchInput).change( function () {
-            // get the value of the input field so we can filter the results
-            var filter = $(this).val();
-            if (filter) {
-                //$(list).find('div[data-keyword=' + $(this).val() + ']').show();
-                $(list).find("span:not(:Contains(" + filter + "))").parent().slideUp();
-                console.log($(this).val());
-
-                //$(list).find('div:not([data-keyword=' + $(this).val() + '])').hide();
-                $(list).find("span:Contains(" + filter + ")").parent().slideDown();
-            } else {
-                $(list).find('span').parent().slideDown();
-            }
-            return false;
-
-        })
-            .keyup ( function () {
+            })
+            .keyup(function () {
                 $(this).change();
             });
-    }
+
+            $(resetButton).click( function () {
+                $(list).find('.article-list__item').slideDown();
+            });
+        }
 
         $(function () {
             listFilter();
         });
     }(jQuery));
-
-
 
 
 </script>
