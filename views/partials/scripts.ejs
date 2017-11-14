@@ -7,7 +7,7 @@
 <script>
 
     //Animation für die grünen Notifications
-    $(document).ready(function() {
+    $(document).ready(function () {
         var note = $('.notification');
         note.animate({right: '50px'}, 1000).delay(2000).animate({right: '-250px'}, 1000).fadeOut(500);
 
@@ -17,31 +17,31 @@
 
     // Script für die Bestelloberfläche der Bar, -> die Selectfelder
 
-    $('.btn-number').click(function(e){
+    $('.btn-number').click(function (e) {
         e.preventDefault();
 
         var btn = $(this);
         fieldName = $(this).attr('data-field');
-        type      = $(this).attr('data-type');
+        type = $(this).attr('data-type');
         var input = btn.closest('.number-spinner').find('input');
         var currentVal = parseInt(input.val());
 
         if (!isNaN(currentVal)) {
-            if(type == 'minus') {
+            if (type == 'minus') {
 
-                if(currentVal > input.attr('min')) {
+                if (currentVal > input.attr('min')) {
                     input.val(currentVal - 1).change();
                 }
-                if(parseInt(input.val()) == input.attr('min')) {
+                if (parseInt(input.val()) == input.attr('min')) {
                     $(this).attr('disabled', true);
                 }
 
-            } else if(type == 'plus') {
+            } else if (type == 'plus') {
 
-                if(currentVal < input.attr('max')) {
+                if (currentVal < input.attr('max')) {
                     input.val(currentVal + 1).change();
                 }
-                if(parseInt(input.val()) == input.attr('max')) {
+                if (parseInt(input.val()) == input.attr('max')) {
                     $(this).attr('disabled', true);
                 }
             }
@@ -49,25 +49,25 @@
             input.val(0);
         }
     });
-    $('.input-number').focusin(function(){
+    $('.input-number').focusin(function () {
         $(this).data('oldValue', $(this).val());
     });
-    $('.input-number').change(function() {
+    $('.input-number').change(function () {
 
-        minValue =  parseInt($(this).attr('min'));
-        maxValue =  parseInt($(this).attr('max'));
+        minValue = parseInt($(this).attr('min'));
+        maxValue = parseInt($(this).attr('max'));
         valueCurrent = parseInt($(this).val());
 
         name = $(this).attr('name');
-        if(valueCurrent >= minValue) {
-            $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+        if (valueCurrent >= minValue) {
+            $(".btn-number[data-type='minus'][data-field='" + name + "']").removeAttr('disabled')
         } else {
             $(this).closest('.article__box').append('<span class="label label-danger">Sorry, der Minimalwert wurde erreicht!</span>');
             $('.label-danger').delay(2000).fadeOut(500);
             $(this).val($(this).data('oldValue'));
         }
-        if(valueCurrent <= maxValue) {
-            $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+        if (valueCurrent <= maxValue) {
+            $(".btn-number[data-type='plus'][data-field='" + name + "']").removeAttr('disabled')
         } else {
             $(this).closest('.article__box').append('<span class="label label-danger">Sorry, der Maximalwert wurde erreicht!</span>');
             $('.label-danger').delay(2000).fadeOut(500);
@@ -75,6 +75,54 @@
 
         }
     });
+
+
+
+    (function ($) {
+
+    function listFilter(){
+
+        var searchInput = $('#search');
+
+        var dataItem = $('.admin-data-item');
+        var dataKeyword = $(dataItem).attr('data-keyword');
+
+        var list = $('.article-list');
+
+        helper = $('.filter-helper').val();
+
+        jQuery.expr[':'].Contains = function(a,i,m){
+            return (searchInput.val() || span.html() || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+        };
+
+        $(searchInput).change( function () {
+            // get the value of the input field so we can filter the results
+            var filter = $(this).val();
+            if (filter) {
+                //$(list).find('div[data-keyword=' + $(this).val() + ']').show();
+                $(list).find("span:not(:Contains(" + filter + "))").parent().slideUp();
+                console.log($(this).val());
+
+                //$(list).find('div:not([data-keyword=' + $(this).val() + '])').hide();
+                $(list).find("span:Contains(" + filter + ")").parent().slideDown();
+            } else {
+                $(list).find('span').parent().slideDown();
+            }
+            return false;
+
+        })
+            .keyup ( function () {
+                $(this).change();
+            });
+    }
+
+        $(function () {
+            listFilter();
+        });
+    }(jQuery));
+
+
+
 
 </script>
 

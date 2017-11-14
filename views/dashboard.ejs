@@ -112,7 +112,7 @@
 <!-- Modal add article ENDE -->
 
 
-<div class="container">
+<div class="container article-list">
 
     <h1>Lagerbestand</h1>
 
@@ -131,7 +131,8 @@
     <% var LeftInStock = PercentageVal / articles[i].startstock * 100 %>
     <% var LeftRounded = Math.floor(LeftInStock) %>
 
-    <div data-keyword="<%= articles[i].description %>" class="panel-group">
+    <div data-keyword="<%= articles[i].description %>" class="article-list__item panel-group">
+        <span class="filter-helper hidden"><%= articles[i].description %></span>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">

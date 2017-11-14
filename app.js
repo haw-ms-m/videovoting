@@ -289,7 +289,7 @@ app.post('/bar-order', function (request, response) {
             return [arr[i], e];
         })
     };
-
+    // die beiden Arrays werden nun zu einem neuen zusammengefasst
     newArray = idsArray.zip(amountArray);
 
     //Die Anfangslänge muss hier schon in einer Variablen abgespeichert werden, damit diese weiter unten von der Schleife genutzt werden kann.
