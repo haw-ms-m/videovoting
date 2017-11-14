@@ -135,6 +135,8 @@
                     </div>
 
                     <% for(var i = 0; i < stock.length; i++) { %>
+                <% var x = stock[i].datetime%>
+                <% var dateString = moment.utc(x).format("DD-MM-YYYY, HH:mm"); %>
                     <form action="" method="post">
                         <div class="panel-group">
                             <div class="panel panel-default">
@@ -143,8 +145,8 @@
                                         <!--article details im panel-->
                                         <input type="hidden" name="orderID" value="<%= stock[i].o_id %>">
                                         <div class="col-xs-1"><p><i class="fa fa-hashtag"></i> <%= stock[i].o_id %></p></div>
-                                        <div class="col-xs-2"><p><i class="fa fa-hashtag"></i> <%= stock[i].name %></p></div>
-                                        <div class="col-xs-2"><p><i class="fa fa-clock-o"></i> <%= stock[i].datetime %></p></div>
+                                        <div class="col-xs-2"><p><i class="fa fa-glass"></i> <%= stock[i].name %></p></div>
+                                        <div class="col-xs-2"><p><i class="fa fa-clock-o"></i> <%= dateString %></p></div>
                                             <% if (stock[i].status === 'Fertig') { %>
                                             <div class="col-xs-3"><p class="label label-success"><i
                                                             class="fa fa-check-square-o"></i> <%= stock[i].status %></p>
@@ -159,7 +161,7 @@
                                             
                                             <% } else if (stock[i].status === 'Storniert') { %>
                                             <div class="col-xs-3"><p class="label label-info"><i
-                                                            class="fa fa-refresh"></i> <%= stock[i].status %></p></div>
+                                                            class="fa fa-times-rectangle"></i> <%= stock[i].status %></p></div>
 
                                             <% } %>
 
@@ -378,6 +380,8 @@
                     </div>
 
                     <% for(var i = 0; i < stock.length; i++) { %>
+                        <% var x = stock[i].datetime%>
+                        <% var dateString = moment.utc(x).format("DD-MM-YYYY, HH:mm"); %>
                     <form action="" method="post">
                         <div class="panel-group">
                             <div class="panel panel-default">
@@ -387,7 +391,7 @@
                                         <input type="hidden" name="orderID" value="<%= stock[i].o_id %>">
                                         <div class="col-xs-1"><p><i class="fa fa-hashtag"></i> <%= stock[i].o_id %></p>
                                         </div>
-                                        <div class="col-xs-2"><p><i class="fa fa-clock-o"></i> <%= stock[i].datetime %></p></div>
+                                        <div class="col-xs-2"><p><i class="fa fa-clock-o"></i> <%= dateString %></p></div>
                                             <% if (stock[i].status === 'Fertig') { %>
                                             <div class="col-xs-3"><p class="label label-success"><i
                                                             class="fa fa-check-square-o"></i> <%= stock[i].status %></p>

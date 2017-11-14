@@ -28,11 +28,6 @@
                     <a data-toggle="modal" data-target="#register">neuen Benutzer anlegen</a>
                 </li>
 
-
-                
-                
-                
-
                 <li>
                     <a data-toggle="modal" data-target="#showordersadmin">Bestellhistory</a>
                 </li>
@@ -45,12 +40,14 @@
                     <% } else { }%>
 
             </ul>
+            <% if (userRole === 'admin' && authenticated === true) { %>
             <form class="navbar-form navbar-left">
                 <div class="form-group">
                     <input id="search" type="text" class="form-control" placeholder="Artikel durchsuchen">
                 </div>
                 <button id="resetbtn" type="reset" class="btn btn-default">zurücksetzen</button>
             </form>
+            <%}%>
 
             <ul class="nav navbar-nav navbar-right">
                 <li><a class="navbar-link">eingeloggt als: <i class="fa fa-user"></i>  <%= userRole %></a></li>
