@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 var app = express();
+var moment = require('moment');
+app.locals.moment = moment; // this makes moment available as a variable in every EJS page
+
 
 app.use('/static', express.static('./static'));
 
@@ -88,6 +91,7 @@ app.get('/dashboard', function (request, response) {
                             username: request.session.username,
                             authenticated: request.session.authenticated,
                             stock: stockResult,
+                            moment: moment,
                             userRole: request.session.userRole,
                             positions: positionsOrdersResult,
                             title: 'Dashboard',
@@ -150,7 +154,7 @@ app.get('/dashboard', function (request, response) {
 
 
                     console.log('positionsOrdersResult', positionsOrdersResult);
-
+                    //console.log('stockResult',stockResult[0].datetime);
 
                     response.render('dashboard', {
                         positions: positionsOrdersResult,
