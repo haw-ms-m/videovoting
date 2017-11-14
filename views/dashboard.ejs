@@ -112,6 +112,119 @@
 <!-- Modal add article ENDE -->
 
 
+<!-- Modal Register to show the Orders for admin -->
+<div class="modal fade" id="showordersadmin" tabindex="-1" role="dialog" aria-labelledby="registerLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h2 class="modal-title" id="registerLabel">Bestellungen</h2>
+            </div>
+            <div class="modal-body">
+                <!-- show orders -->
+
+                    <h1>Bestellungen</h1>
+
+                    <div class="row">
+                        <div class="col-xs-1"><h4>ID</h4></div>
+                        <div class="col-xs-2"><h4>Name</h4></div>
+                        <div class="col-xs-2"><h4>Datum</h4></div>
+                        <div class="col-xs-3"><h4>Status</h4></div>
+                        <div class="col-xs-2"><h4>Inhalt</h4></div>
+                    </div>
+
+                    <% for(var i = 0; i < stock.length; i++) { %>
+                    <form action="" method="post">
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <!--article details im panel-->
+                                        <input type="hidden" name="orderID" value="<%= stock[i].o_id %>">
+                                        <div class="col-xs-1"><p><i class="fa fa-hashtag"></i> <%= stock[i].o_id %></p></div>
+                                        <div class="col-xs-2"><p><i class="fa fa-hashtag"></i> <%= stock[i].name %></p></div>
+                                        <div class="col-xs-2"><p><i class="fa fa-clock-o"></i> <%= stock[i].datetime %></p></div>
+                                            <% if (stock[i].status === 'Fertig') { %>
+                                            <div class="col-xs-3"><p class="label label-success"><i
+                                                            class="fa fa-check-square-o"></i> <%= stock[i].status %></p>
+                                            </div>
+                                            <% } else if (stock[i].status === 'Nicht bearbeitet'){ %>
+                                            <div class="col-xs-3"><p class="label label-danger"><i
+                                                            class="fa fa-times-rectangle"></i> <%= stock[i].status %></p>
+                                            </div>
+                                            <% } else if (stock[i].status === 'Wird bearbeitet') { %>
+                                            <div class="col-xs-3"><p class="label label-warning"><i
+                                                            class="fa fa-refresh"></i> <%= stock[i].status %></p></div>
+                                            
+                                            <% } else if (stock[i].status === 'Storniert') { %>
+                                            <div class="col-xs-3"><p class="label label-info"><i
+                                                            class="fa fa-refresh"></i> <%= stock[i].status %></p></div>
+
+                                            <% } %>
+
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-default" data-toggle="collapse"
+                                                    href="#collapse<%= [i] %>"><i
+                                                        class="fa fa-eye"></i> Anzeigen
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="collapse<%= [i] %>" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <!--formular um den Inhalt einer Bestellung anzuzeigen-->
+                                        <form action="" method="post">
+                                            <div class="form-group">
+                                                <div class="row">
+
+                                                    <!--Verstecktes Feld!! Wichtig für die ID-->
+                                                    
+
+                                                    <% for(var k = 0; k < positions.length; k++) { %>
+                                                    <% if (positions[k].o_id === stock[i].o_id) { %>
+                                                        <input type="hidden" name="articleIDcancel" value="<%= positions[k].a_id %>">
+                                                        <input type="hidden" name="articleAMOUNTcancel" value="<%= positions[k].amount %>">
+                                                        <div class="row">
+                                                        <div class="col-xs-1"></div>
+                                                        <div class="col-xs-2">
+                                                            Artikel:
+                                                            <%= positions[k].description %>
+                                                        </div>
+                                                        <div class="col-xs-2">
+                                                            Anzahl:
+                                                            <%= positions[k].amount %>
+                                                        </div>
+                                                        <div class="col-xs-2">
+                                                            Lagerung:
+                                                            <%= positions[k].kind %>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+                                                    <% } %>
+
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <% } %>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Show Orders ENDE -->
+
+
+
+
+
+
 <div class="container article-list">
 
     <h1>Lagerbestand</h1>

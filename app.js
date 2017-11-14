@@ -75,17 +75,27 @@ app.get('/dashboard', function (request, response) {
             mysqlConnect.query("SELECT * FROM article ORDER BY description ASC ", function (err, result, fields) {
                 if (err) throw err;
 
-                var articleList = result;
+                stockSelectQuery = "SELECT orders.o_id, users.name, orders.datetime, orders.status FROM orders, users WHERE orders.id = users.id ORDER BY orders.status DESC";
+                mysqlConnect.query(stockSelectQuery, function (err, stockResult, fields) {                
+                    positionsSelectQuery = "SELECT positions.a_id, article.description, positions.amount, positions.o_id, article.kind FROM article, orders, positions WHERE positions.a_id = article.a_id AND positions.o_id = orders.o_id";
+                    console.log(stockResult) ;
+                    mysqlConnect.query(positionsSelectQuery, function (err, positionsOrdersResult, fields) {
 
-                response.render('dashboard', {
-                    articles: articleList,
-                    username: request.session.username,
-                    authenticated: request.session.authenticated,
-                    userRole: request.session.userRole,
-                    title: 'Dashboard',
-                    message: request.flash('message'),
-                    error: request.flash('error'),
-                    page: request.url
+                        var articleList = result;
+
+                        response.render('dashboard', {
+                            articles: articleList,
+                            username: request.session.username,
+                            authenticated: request.session.authenticated,
+                            stock: stockResult,
+                            userRole: request.session.userRole,
+                            positions: positionsOrdersResult,
+                            title: 'Dashboard',
+                            message: request.flash('message'),
+                            error: request.flash('error'),
+                            page: request.url
+                        });
+                    });
                 });
             });
         });
