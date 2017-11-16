@@ -682,3 +682,6 @@ app.get('/logout', function (request, response) {
     request.flash('message', 'Sie sind ausgeloggt');
     response.redirect('/');
 });
+
+
+// commit für develop branch
