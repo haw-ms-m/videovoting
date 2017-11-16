@@ -534,6 +534,15 @@
 <% } %>
 <% if (userRole === 'lager' && authenticated === true) { %>
 
+<h1 id="socketio"> not connected </h1>
+<div id="display"> </div>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+        var socket = io();
+</script>
+
+<% socket.on('dashboard', function(positions,stock,username,authenticated,userRole,title,message,error,page) {
 <div class="container">
 
     <h1>Bestellungen</h1>
@@ -637,7 +646,7 @@
     </form>
     <% } %>
 </div>
-
+<% }); %>
 
 <% } %>
 <% include partials/scripts.ejs %>
