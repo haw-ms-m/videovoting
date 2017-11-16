@@ -26,6 +26,7 @@
     "mysql": "^2.15.0",
     "nodemon": "^1.12.1",
     "password-hash": "^1.2.2",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "socket.io": "^2.0.4"
   }
 }
