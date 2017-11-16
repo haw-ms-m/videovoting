@@ -536,6 +536,14 @@
 
 <div class="container">
 
+
+     <% var socket = io();
+
+         socket.on('connect', function() {
+             console.log(test);
+         }); %>
+
+
     <h1>Bestellungen</h1>
 
     <div class="row">
