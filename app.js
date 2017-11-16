@@ -696,3 +696,4 @@ app.get('/logout', function (request, response) {
 
 
 // commit für develop branch
+//https://stackoverflow.com/questions/40371335/printing-mysql-database-to-a-html-page-in-socket-io-and-node-js
