@@ -1,3 +1,4 @@
+//INITIALIZE WEBSERVICE AND WEBSITE
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
@@ -7,11 +8,7 @@ var flash = require('connect-flash');
 var app = express();
 var moment = require('moment');
 app.locals.moment = moment; // this makes moment available as a variable in every EJS page
-
-
 app.use('/static', express.static('./static'));
-
-
 app.set('views', path.join(__dirname, 'views'));
 
 // view engine setup
@@ -37,8 +34,7 @@ app.use(flash());
 //password hash, for encoding the pw
 const passwordHash = require('password-hash');
 
-
-// Initialisierung der Datenbank
+//Initialize database
 var mysql = require('mysql');
 
 var mysqlConnect = mysql.createConnection({
@@ -48,12 +44,12 @@ var mysqlConnect = mysql.createConnection({
     database: "node"
 });
 
-//Webserver starten
+//Start webserver on port 3000
 app.listen(3000, function () {
     console.log("listening on 3000");
 });
 
-// Homepage laden
+//Load homepage
 app.get('/', function (request, response) {
 
     response.render('index', {
@@ -64,11 +60,11 @@ app.get('/', function (request, response) {
     });
 });
 
-//either go to the landing page (user not logged in) or go to the content page (user logged in)
+//Either go to landing page (user not logged in) or to content page (user logged in).
 app.get('/dashboard', function (request, response) {
 
 
-    // show dashboard for the Admin!!!
+    //-->ADMIN<-- GET CONTENTS FOR ADMIN DASHBOARD AND RENDER IT.
     if (request.session.authenticated && request.session.userRole === 'admin') {
 
 
@@ -104,7 +100,7 @@ app.get('/dashboard', function (request, response) {
             });
         });
 
-    // show dashboard for the Bar!!!
+    //-->BAR<-- GET CONTENTS FOR BAR DASHBOARD AND RENDER IT.
     } else if (request.session.authenticated && request.session.userRole === 'bar') {
         var currentUserId = request.session.userId;
         
@@ -138,7 +134,7 @@ app.get('/dashboard', function (request, response) {
             });
         });
 
-    // show dashboard for the Lager!!!
+    //-->LAGER<-- GET CONTENTS FOR LAGER DASHBOARD AND RENDER IT.
     } else if (request.session.authenticated && request.session.userRole === 'lager') {
 
         mysqlConnect.connect(function (err) {
@@ -148,10 +144,8 @@ app.get('/dashboard', function (request, response) {
             stockSelectQuery = "SELECT orders.o_id, users.name, orders.datetime, orders.status FROM orders, users WHERE orders.id = users.id AND orders.status != 'Storniert' ORDER BY orders.status DESC";
             mysqlConnect.query(stockSelectQuery, function (err, stockResult, fields) {
 
-
                 positionsSelectQuery = "SELECT article.description, positions.amount, positions.o_id, article.kind FROM article, orders, positions WHERE positions.a_id = article.a_id AND positions.o_id = orders.o_id";
                 mysqlConnect.query(positionsSelectQuery, function (err, positionsOrdersResult, fields) {
-
 
                     console.log('positionsOrdersResult', positionsOrdersResult);
                     //console.log('stockResult',stockResult[0].datetime);
@@ -168,20 +162,21 @@ app.get('/dashboard', function (request, response) {
                         page: request.url
                     });
                 });
-
             });
         });
-
     }
-
     else {
         response.redirect('/');
     }
-
-
 });
 
-//Update Order Status
+
+
+
+
+
+//EXECUTE DASHBOARD COMMANDS
+//Update order status from LAGER
 app.post('/update-order', function (request, response) {
 
     const orderID = request.body.orderID;
@@ -193,7 +188,7 @@ app.post('/update-order', function (request, response) {
         request.flash('error', 'Bitte den Status auswählen um ihn zu ändern');
         response.redirect('/dashboard');
     }
-    else{
+    else {
         mysqlConnect.connect(function (err) {
             var sql = "UPDATE orders SET status = " + "'" + changestatus + "'" + " WHERE o_id = " + orderID + "";
             console.log(sql);
@@ -210,19 +205,18 @@ app.post('/update-order', function (request, response) {
     }
 });
 
-//Cancel Order
+//Cancel order from BAR
 app.post('/storn_order', function (request, response) {
     
     console.log(request.body.articleIDcancel);
     console.log(request.body.articleAMOUNTcancel);
     
-    //Variable für SQl Schleife
+    //Variable for SQl loop
     var y = 0 ;
     
     const orderID = request.body.orderID;
     var changestatus = request.body.changestatus; 
     var articleIDcancel1 = request.body.articleIDcancel
-
 
     if (Array.isArray(articleIDcancel1)== true) {
         var articleIDcancel = request.body.articleIDcancel;
@@ -253,16 +247,16 @@ app.post('/storn_order', function (request, response) {
                 console.log('Z=', z) ;
                 if (err) throw err;       
 
-                //Variablen zu Berechnung des neuen Consumed-Wert
+                //Variables for claculate new consumed value.
                 var artnr = parseInt(articleIDcancel[y]);
                 var orderconsumed = parseInt(articleAMOUNTcancel[y]);
                 y++ ;
   
-                //Neuen Wert für Consumed errechnen und in Variable speichern.
+                //Claculate new consumed value and save it in variable.
                 var newconsumed = parseInt(resultcon[0].consumed) - orderconsumed;
                 console.log("Alt", resultcon[0].consumed, '-', 'storniert',orderconsumed, '=',newconsumed );
         
-                //Neuen Comsumed-Wert in die Datenbank schreiben.
+                //Draw new consumed value in database.
                 var articleconsumedSQLinsert = "UPDATE article SET consumed = " + newconsumed + " WHERE a_id = " + artnr + "";
                 console.log(articleconsumedSQLinsert);
                 
@@ -280,7 +274,7 @@ app.post('/storn_order', function (request, response) {
 
 
 
-//update article
+//Change article from ADMIN
 app.post('/update-article', function (request, response) {
 
     const articleID = request.body.articleID;
@@ -290,13 +284,10 @@ app.post('/update-article', function (request, response) {
     const articleConsumed = request.body.articleConsumed;
 
     mysqlConnect.connect(function (err) {
-
         var sql = "UPDATE article SET description=" + "'" + articleDescription + "'" + ", kind=" + "'" + articleStockkind + "'" + ", startstock=" + articleStartstock + ", consumed=" + articleConsumed + " WHERE a_id=" + articleID;
 
         mysqlConnect.query(sql, function (err, result) {
             if (err) throw err;
-
-            //console.log(result + " record(s) updated");
         });
     });
     request.flash('message', 'Artikel geändert.');
@@ -304,7 +295,7 @@ app.post('/update-article', function (request, response) {
 });
 
 
-//Delete article
+//Delete article from ADMIN
 app.post('/delete-article', function (request, response) {
  const articleID = request.body.articleID;
 
@@ -315,7 +306,7 @@ app.post('/delete-article', function (request, response) {
                 request.flash('error', 'Atrikel kann nicht gelöscht werden, da dieser in einer Bestellung vorhanden ist!');
                 response.redirect('/dashboard');
             }
-            else{
+            else {
                 console.log(result + " gelöscht");
                 request.flash('message', 'Artikel gelöscht.');
                 response.redirect('/dashboard');
@@ -324,7 +315,8 @@ app.post('/delete-article', function (request, response) {
     });
 });
 
-//Create order
+//Create order from BAR
+//Description in german.
 app.post('/bar-order', function (request, response) {
 
     var idsArray = Array.prototype.slice.call(request.body.articleID);
@@ -338,7 +330,7 @@ app.post('/bar-order', function (request, response) {
             return [arr[i], e];
         })
     };
-    // die beiden Arrays werden nun zu einem neuen zusammengefasst
+    //Die beiden Arrays werden nun zu einem neuen zusammengefasst
     newArray = idsArray.zip(amountArray);
 
     //Die Anfangslänge muss hier schon in einer Variablen abgespeichert werden, damit diese weiter unten von der Schleife genutzt werden kann.
@@ -347,7 +339,7 @@ app.post('/bar-order', function (request, response) {
     //Array sortieren
     newArray.sort();
 
-    // wenn das erste innere Element eine 0 enthält , wird das komplette Element aus dem Array gelöscht!
+    //Wenn das erste innere Element eine 0 enthält , wird das komplette Element aus dem Array gelöscht!
     for (var i = 0; i < length; i++) {
         //Hier muss immer der erste (nullte) Wert in dem Array geprüft werden und wenn TRUE, gelöscht werden.
         //Somit wird immer der erste Wert im Array überprüft. Das funktioniert nur, weil wir das Array sortiert haben
@@ -368,20 +360,18 @@ app.post('/bar-order', function (request, response) {
 
         mysqlConnect.connect(function (err) {
 
-            // Zuerst die bestehenden Bestellungen abfragen
+            //Zuerst die bestehenden Bestellungen abfragen
             mysqlConnect.query("SELECT id FROM orders", function (err, result, fields) {
                 if (err) throw err;
 
-                // Zählen wie viele Bestellungen es gibt
-                // Ergebnis in variable Speichern
+                //Zählen wie viele Bestellungen es gibt
+                //Ergebnis in variable Speichern
                 var countOrders = result.length;
-                console.log('Aktuelle Anzahl der Bestellungen: ',countOrders);
 
                 //Hier muss bei der Order ID mit der Variablen hochgezählt werden einen hochgezählt werden.
                 //Als id muss die User ID des aktuell bearbeitenden Benutzer eingetragen werden z.B. in die Variable $id!
 
                 var newCountOrders = countOrders + 1; // erledigt
-                console.log('Neue o_id resultierend aus Anzahl der Bestellungen:', newCountOrders);
 
                 //verbinde mit SQL und übergebe Order
                 var orderSql = "INSERT INTO orders (o_id,status,id,datetime) VALUES(" + newCountOrders + ',' + " 'Nicht bearbeitet' " + ',' + currentUserId + ',' + " CURRENT_TIMESTAMP " + ")";
@@ -390,7 +380,7 @@ app.post('/bar-order', function (request, response) {
                     console.log('order added to database o_id =',newCountOrders);
                 });
                       
-                // Zählschleife um jede Bestellung nacheinander in die Datenbank einzutragen
+                //Zählschleife um jede Bestellung nacheinander in die Datenbank einzutragen
                 for (var h = 0; h < newArray.length; h++) {   
                     console.log('Amount=' + newArray[h][0]);
                     console.log('Article Nr. =' + newArray[h][1]);
@@ -399,10 +389,8 @@ app.post('/bar-order', function (request, response) {
                     console.log('newOrderID ' + newOrderID);
                     //o_id muss aus der Variablen ausgelesen werden. -> hab ich übernommen,  amount ist die Anzahl der Artikel die bestellt wird. hier ist das newArray[k][0]
                     var positionSQL = "INSERT INTO positions (o_id,a_id,amount) VALUES (" + newOrderID + ',' + newArray[h][1] + ',' + newArray[h][0] + ")";
-                    console.log(positionSQL);
 
                     mysqlConnect.query(positionSQL, function (err, result_id, fields) {
-
                         if (err) throw err;
                     });
                 }
@@ -445,7 +433,7 @@ app.post('/bar-order', function (request, response) {
     }
 });
 
-//User registration
+//Add user from ADMIN
 app.post('/register', function (request, response) {
     const username = request.body.username;
     const password = request.body.password;
@@ -457,7 +445,7 @@ app.post('/register', function (request, response) {
         request.flash('error', 'Bitte wählen Sie eine Rolle aus!');
         response.redirect('/dashboard');
     }
-    else{
+    else {
         if (username === "" || username === undefined) {
             errors.push('Bitte einen Username eingeben.');
         }
@@ -470,20 +458,16 @@ app.post('/register', function (request, response) {
         if (password !== repPassword) {
             errors.push('Die Passwörter stimmen nicht überein.');
         }
-    
-        //connect to mysql
-    
+
         mysqlConnect.connect(function (err) {
             console.log("Connected!");
     
-            //fist check if user exists
+            //Fist check if user exists.
             mysqlConnect.query("SELECT name FROM users WHERE name =" + "'" + username + "'", function (err, result, fields) {
     
-                // if user exists throw error
+                //If user exists throw error.
                 if (result.length > 0) {
-    
                     errors.push("der Benutzer existiert bereits");
-    
                     response.render('dashboard', {
                         username: request.session.username,
                         authenticated: request.session.authenticated,
@@ -493,8 +477,8 @@ app.post('/register', function (request, response) {
                         message: null,
                         page: request.url
                     });
-    
-                } else {
+                } 
+                else {
                     if (errors.length === 0) {
     
                         console.log('encrypting password...');
@@ -505,15 +489,12 @@ app.post('/register', function (request, response) {
                         var sql = "INSERT INTO users (name, password, role) VALUES (" + "'" + username + "' , '" + encryptedPassword + "' , '" + role + "' )";
                         mysqlConnect.query(sql, function (err, result) {
                             if (err) throw err;
-    
                             console.log('user added to database');
-    
                             request.flash('message', 'Neuer Benutzer registriert');
                             response.redirect('/dashboard');
-    
                         });
-    
-                    } else {
+                    } 
+                    else {
                         response.render('dashboard', {
                             username: request.session.username,
                             authenticated: request.session.authenticated,
@@ -530,29 +511,25 @@ app.post('/register', function (request, response) {
     } 
 });
 
-//ADD ARTICLE TO DATABASE- START
+//Add article from ADMIN 
 app.post('/addaticle', function (request, response) {
     const description = request.body.description;
     const startstock = request.body.startstock;
     const kind = request.body.kind;
-
     let errors = [];
 
     if(kind == undefined) {
         request.flash('error', 'Bitte wählen Sie eine Art aus!');
         response.redirect('/dashboard');
     }
-    else{
-        //connect to mysql
+    else {
         mysqlConnect.connect(function (err) {
         console.log("Connected!");
-
-            //fist check if article exists
+            //Fist check if article exists.
             mysqlConnect.query("SELECT description FROM article WHERE description =" + "'" + description + "'", function (err, result, fields) {
 
-                // if article exists throw error
+                //If article exists throw error.
                 if (result.length > 0) {
-
                     errors.push("der Artikel existiert bereits");
 
                     response.render('dashboard', {
@@ -595,10 +572,9 @@ app.post('/addaticle', function (request, response) {
         });                
     }    
 });
-//ADD ARTICLE TO DATABASE- END
 
 
-//Login
+//Login for all users
 app.post('/login', function (request, response) {
 
     const username = request.body.username;
@@ -612,16 +588,12 @@ app.post('/login', function (request, response) {
     if (password === "" || password === undefined) {
         errors.push('Bitte ein Passwort eingeben.');
     }
-
     if (errors.length === 0) {
-
         mysqlConnect.connect(function (err) {
             console.log("Connected!");
 
-            // find registered user in database
+            //Find registered user in database.
             mysqlConnect.query("SELECT * FROM users WHERE name =" + "'" + username + "'", function (err, result, fields) {
-
-
                 if (result.length < 0 || result[0] === undefined) {
                     // user does not exist
                     errors.push("der Benutzer existiert nicht!");
@@ -632,25 +604,21 @@ app.post('/login', function (request, response) {
                         message: null,
                         page: request.url
                     });
-                } else {
-
-                    // if user exists
-                    // if entered password is equal to the password in the database
+                } 
+                else {
+                    //If user exists
+                    //If entered password is equal to the password in the database
                     if (passwordHash.verify(password, result[0].password)) {
                         request.session.authenticated = true;
                         request.session.username = username;
                         request.session.userRole = result[0].role;
                         request.session.userId = result[0].id;
-
-
                         request.flash('message', 'Sie sind eingeloggt');
-                        // redirect to dashboard
+                        //Redirect to dashboard
                         response.redirect('/dashboard');
-
-                    } else {
-
+                    } 
+                    else {
                         errors.push('Das Passwort für diesen User stimmt nicht überein.');
-
                         response.render('index', {
                             'error': errors,
                             title: 'Errors',
@@ -659,11 +627,10 @@ app.post('/login', function (request, response) {
                         });
                     }
                 }
-
             });
         });
-
-    } else {
+    } 
+    else {
         response.render('index', {
             'error': errors,
             title: 'Errors',
@@ -674,7 +641,7 @@ app.post('/login', function (request, response) {
 });
 
 
-//log the user out again and delete his session, redirect to main page
+//Logout and delete his session, redirect to main page.
 app.get('/logout', function (request, response) {
     delete request.session.authenticated;
     delete request.session.username;
