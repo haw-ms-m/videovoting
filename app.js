@@ -268,7 +268,7 @@ app.post('/storn_order', function (request, response) {
         }
     });
 
-    request.flash('message', 'Consumed aktualisiert');
+    request.flash('message', 'Bestellung storniert!');
     response.redirect('/dashboard');
 });
 
@@ -640,6 +640,9 @@ app.post('/login', function (request, response) {
     }
 });
 
+app.get('/login', function (request, response) {
+    response.redirect('/');
+});
 
 //Logout and delete his session, redirect to main page.
 app.get('/logout', function (request, response) {
